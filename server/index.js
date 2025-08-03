@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+// index.js
+>>>>>>> 75d920ae7bf62d1851e2cb295d1923b203077e75
 const express = require('express');
 const app = express();
 
@@ -16,4 +20,6 @@ app.get('/', (req, res) => {
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
+
 });
+
