@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-// index.js
->>>>>>> 75d920ae7bf62d1851e2cb295d1923b203077e75
 const express = require('express');
 const app = express();
 
