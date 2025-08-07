@@ -17,7 +17,9 @@ export default function Login() {
         e.preventDefault();
         const { email, password, role } = formData;
 
-        const loginUrl = role === 'user' ? 'http://localhost:8080/api/auth/user/login' : 'http://localhost:8080/api/auth/vendor/login';
+        const loginUrl = role === 'user' 
+            ? 'http://localhost:8080/api/auth/user/login' 
+            : 'http://localhost:8080/api/auth/agent/login';
 
         try {
             const res = await axios.post(loginUrl, {
@@ -33,8 +35,8 @@ export default function Login() {
             console.log("Login successful");
             if (role === 'user') {
                 navigate('/dashboard');
-            } else if (role === 'vendor') {
-                navigate('/vendor-dashboard');
+            } else if (role === 'agent') {
+                navigate('/agent-dashboard');
             } else {
                 navigate('/login');
             }
@@ -89,12 +91,12 @@ export default function Login() {
                             <input
                                 type="radio"
                                 name="role"
-                                value="vendor"
-                                checked={formData.role === 'vendor'}
+                                value="agent"
+                                checked={formData.role === 'agent'}
                                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                                 className="mr-2"
                             />
-                            Vendor
+                            Agent
                         </label>
                     </div>
                 </div>
