@@ -5,13 +5,13 @@ import { toast } from 'react-hot-toast';
 
 export default function Signup() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    phone: '',
-    role: 'user',
-    city: '',
-  });
+  name: '',
+  email: '',
+  password: '',
+  phoneNo: '',  
+  role: 'user',
+  city: '',
+});
 
   const navigate = useNavigate();
 
@@ -35,13 +35,13 @@ export default function Signup() {
           role: formData.role,
         });
       } else if (formData.role === 'agent') {
-        res = await axios.post('http://localhost:8080/api/auth/agent/signup', {
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          phone: formData.phone,
-          role: formData.role,
-          city: formData.city,
+            res = await axios.post('http://localhost:8080/api/auth/agent/signup', {
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+            phoneNo: formData.phoneNo, 
+            role: formData.role,
+            city: formData.city,
         });
       }
 
@@ -133,9 +133,9 @@ export default function Signup() {
             />
             <input
                 type="tel"
-                name="phone"
+                name="phoneNo"  
                 placeholder="Phone Number"
-                value={formData.phone}
+                value={formData.phoneNo}
                 onChange={handleChange}
                 className="w-full mb-6 px-4 py-2 bg-gray-800 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required

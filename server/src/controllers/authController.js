@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/user");
-const Agent = require("../models/agent");
+const User = require('../models/user');
+const Agent = require('../models/agent');
 
 const { hashPassword, comparePassword } = require("../helpers/authHelper");
 
