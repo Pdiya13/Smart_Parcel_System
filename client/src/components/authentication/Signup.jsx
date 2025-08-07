@@ -10,9 +10,7 @@ export default function Signup() {
     password: '',
     phone: '',
     role: 'user',
-    category: '',
-    price: '',
-    experience: '',
+    city: '',
   });
 
   const navigate = useNavigate();
@@ -30,23 +28,20 @@ export default function Signup() {
     try {
       let res;
       if (formData.role === 'user') {
-        res = await axios.post('http://localhost:8080/api/auth/signup', {
+        res = await axios.post('http://localhost:8080/api/auth/user/signup', {
           name: formData.name,
           email: formData.email,
           password: formData.password,
-          phone: formData.phone,
           role: formData.role,
         });
-      } else if (formData.role === 'vendor') {
-        res = await axios.post('http://localhost:8080/api/auth/signup', {
+      } else if (formData.role === 'agent') {
+        res = await axios.post('http://localhost:8080/api/auth/agent/signup', {
           name: formData.name,
           email: formData.email,
           password: formData.password,
           phone: formData.phone,
           role: formData.role,
-          category: formData.category,
-          price: Number(formData.price),
-          experience: Number(formData.experience),
+          city: formData.city,
         });
       }
 
@@ -100,16 +95,6 @@ export default function Signup() {
           required
         />
 
-        <input
-          type="tel"
-          name="phone"
-          placeholder="Phone Number"
-          value={formData.phone}
-          onChange={handleChange}
-          className="w-full mb-6 px-4 py-2 bg-gray-800 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-
         <div className="mb-6 flex items-center justify-center gap-6">
           <label className="flex items-center gap-2">
             <input
@@ -126,45 +111,34 @@ export default function Signup() {
             <input
               type="radio"
               name="role"
-              value="vendor"
-              checked={formData.role === 'vendor'}
+              value="agent"
+              checked={formData.role === 'agent'}
               onChange={handleChange}
               className="accent-blue-500"
             />
-            Vendor
+            Agent
           </label>
         </div>
 
-        {formData.role === 'vendor' && (
+        {formData.role === 'agent' && (
           <>
             <input
               type="text"
-              name="category"
-              placeholder="Category"
-              value={formData.category}
+              name="city"
+              placeholder="city"
+              value={formData.city}
               onChange={handleChange}
               className="w-full mb-4 px-4 py-2 bg-gray-800 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
             <input
-              type="number"
-              name="price"
-              placeholder="Price"
-              value={formData.price}
-              onChange={handleChange}
-              className="w-full mb-4 px-4 py-2 bg-gray-800 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-              min={0}
-            />
-            <input
-              type="number"
-              name="experience"
-              placeholder="Experience (years)"
-              value={formData.experience}
-              onChange={handleChange}
-              className="w-full mb-6 px-4 py-2 bg-gray-800 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-              min={0}
+                type="tel"
+                name="phone"
+                placeholder="Phone Number"
+                value={formData.phone}
+                onChange={handleChange}
+                className="w-full mb-6 px-4 py-2 bg-gray-800 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
             />
           </>
         )}
