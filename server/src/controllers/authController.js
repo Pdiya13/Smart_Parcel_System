@@ -46,9 +46,9 @@ const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-    res.status(200).json({ message: "Login successful", token });
+    res.status(200).json({status : true , message: "Login successful", token });
   } catch (err) {
-    res.status(500).json({ message: "Login failed", error: err.message });
+    res.status(500).json({status : false , message: "Login failed", error: err.message });
   }
 };
 
@@ -67,9 +67,9 @@ const agentsignup = async (req, res) => {
     const newAgent = new Agent({ name, email, password: hashed, city, phoneNo });
     await newAgent.save();
 
-    res.status(201).json({ message: "Agent registered successfully" });
+    res.status(201).json({status : true , message: "Agent registered successfully" });
   } catch (err) {
-    res.status(500).json({ message: "Signup failed", error: err.message });
+    res.status(500).json({ status : false ,message: "Signup failed", error: err.message });
   }
 };
 
@@ -86,9 +86,9 @@ const agentlogin = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
 
     const token = jwt.sign({ agentId: agent._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-    res.status(200).json({ message: "Login successful", token });
+    res.status(200).json({status : true , message: "Login successful", token });
   } catch (err) {
-    res.status(500).json({ message: "Login failed", error: err.message });
+    res.status(500).json({status : false , message: "Login failed", error: err.message });
   }
 };
 
