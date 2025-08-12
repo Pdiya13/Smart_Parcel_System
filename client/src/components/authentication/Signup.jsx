@@ -1,26 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 
 export default function Signup() {
   const [formData, setFormData] = useState({
-  name: '',
-  email: '',
-  password: '',
-  phoneNo: '',  
-  role: 'user',
-  city: '',
-});
+    name: '',
+    email: '',
+    password: '',
+    phoneNo: '',
+    role: 'user',
+    city: '',
+  });
+
+  const [cities, setCities] = useState([]);
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    async function fetchCities() {
+      try {
+        const res = await axios.get('http://localhost:8080/api/auth/agent/allowedCities');
+        if (res.data && res.data.cities) {
+          setCities(res.data.cities);
+        }
+      } catch (err) {
+        console.error('Failed to fetch cities', err);
+      }
+    }
+    fetchCities();
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -34,14 +47,14 @@ export default function Signup() {
           password: formData.password,
           role: formData.role,
         });
-      } else if (formData.role === 'agent') {
-            res = await axios.post('http://localhost:8080/api/auth/agent/signup', {
-            name: formData.name,
-            email: formData.email,
-            password: formData.password,
-            phoneNo: formData.phoneNo, 
-            role: formData.role,
-            city: formData.city,
+      } else {
+        res = await axios.post('http://localhost:8080/api/auth/agent/signup', {
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          phoneNo: formData.phoneNo,
+          city: formData.city,
+          role: formData.role,
         });
       }
 
@@ -58,7 +71,7 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-800 via-black to-gray-900">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-800 to-gray-900 p-4">
       <form
         onSubmit={handleSubmit}
         className="bg-gradient-to-br from-gray-800 to-black text-white px-8 py-10 rounded-xl shadow-xl w-full max-w-md"
@@ -122,23 +135,29 @@ export default function Signup() {
 
         {formData.role === 'agent' && (
           <>
-            <input
-              type="text"
+            <select
               name="city"
-              placeholder="city"
               value={formData.city}
               onChange={handleChange}
-              className="w-full mb-4 px-4 py-2 bg-gray-800 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full mb-4 px-4 py-2 bg-gray-800 text-white rounded appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
               required
-            />
+            >
+              <option value="" disabled>Select City</option>
+              {cities.map(city => (
+                <option key={city} value={city}>
+                  {city}
+                </option>
+              ))}
+            </select>
+
             <input
-                type="tel"
-                name="phoneNo"  
-                placeholder="Phone Number"
-                value={formData.phoneNo}
-                onChange={handleChange}
-                className="w-full mb-6 px-4 py-2 bg-gray-800 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
+              type="tel"
+              name="phoneNo"
+              placeholder="Phone Number"
+              value={formData.phoneNo}
+              onChange={handleChange}
+              className="w-full mb-6 px-4 py-2 bg-gray-800 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
           </>
         )}
