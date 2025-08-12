@@ -71,107 +71,145 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-800 to-gray-900 p-4">
+    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
       <form
         onSubmit={handleSubmit}
-        className="bg-gradient-to-br from-gray-800 to-black text-white px-8 py-10 rounded-xl shadow-xl w-full max-w-md"
+        className="bg-white p-4 p-md-5 rounded shadow"
+        style={{ width: '100%', maxWidth: '420px' }}
       >
-        <h2 className="text-3xl font-semibold mb-6 text-center tracking-wide">SIGN UP</h2>
+        <h2 className="mb-4 text-center">SIGN UP</h2>
 
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          value={formData.name}
-          onChange={handleChange}
-          className="w-full mb-4 px-4 py-2 bg-gray-800 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
+        <div className="mb-3">
+          <label htmlFor="name" className="form-label">
+            Name
+          </label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            value={formData.name}
+            onChange={handleChange}
+            className="form-control"
+            placeholder="Enter your name"
+            required
+          />
+        </div>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          className="w-full mb-4 px-4 py-2 bg-gray-800 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
+        <div className="mb-3">
+          <label htmlFor="email" className="form-label">
+            Email address
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            className="form-control"
+            placeholder="Enter your email"
+            required
+          />
+        </div>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          className="w-full mb-4 px-4 py-2 bg-gray-800 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
+        <div className="mb-3">
+          <label htmlFor="password" className="form-label">
+            Password
+          </label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            className="form-control"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
 
-        <div className="mb-6 flex items-center justify-center gap-6">
-          <label className="flex items-center gap-2">
+        <fieldset className="mb-4">
+          <legend className="col-form-label">Select Role</legend>
+          <div className="form-check form-check-inline">
             <input
+              className="form-check-input"
               type="radio"
               name="role"
+              id="roleUser"
               value="user"
               checked={formData.role === 'user'}
               onChange={handleChange}
-              className="accent-blue-500"
             />
-            User
-          </label>
-          <label className="flex items-center gap-2">
+            <label className="form-check-label" htmlFor="roleUser">
+              User
+            </label>
+          </div>
+
+          <div className="form-check form-check-inline">
             <input
+              className="form-check-input"
               type="radio"
               name="role"
+              id="roleAgent"
               value="agent"
               checked={formData.role === 'agent'}
               onChange={handleChange}
-              className="accent-blue-500"
             />
-            Agent
-          </label>
-        </div>
+            <label className="form-check-label" htmlFor="roleAgent">
+              Agent
+            </label>
+          </div>
+        </fieldset>
 
         {formData.role === 'agent' && (
           <>
-            <select
-              name="city"
-              value={formData.city}
-              onChange={handleChange}
-              className="w-full mb-4 px-4 py-2 bg-gray-800 text-white rounded appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-              required
-            >
-              <option value="" disabled>Select City</option>
-              {cities.map(city => (
-                <option key={city} value={city}>
-                  {city}
+            <div className="mb-3">
+              <label htmlFor="city" className="form-label">
+                City
+              </label>
+              <select
+                id="city"
+                name="city"
+                value={formData.city}
+                onChange={handleChange}
+                className="form-select"
+                required
+              >
+                <option value="" disabled>
+                  Select City
                 </option>
-              ))}
-            </select>
+                {cities.map((city) => (
+                  <option key={city} value={city}>
+                    {city}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-            <input
-              type="tel"
-              name="phoneNo"
-              placeholder="Phone Number"
-              value={formData.phoneNo}
-              onChange={handleChange}
-              className="w-full mb-6 px-4 py-2 bg-gray-800 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
+            <div className="mb-3">
+              <label htmlFor="phoneNo" className="form-label">
+                Phone Number
+              </label>
+              <input
+                id="phoneNo"
+                name="phoneNo"
+                type="tel"
+                value={formData.phoneNo}
+                onChange={handleChange}
+                className="form-control"
+                placeholder="Enter your phone number"
+                required
+              />
+            </div>
           </>
         )}
 
-        <button
-          type="submit"
-          className="w-full bg-slate-700 hover:bg-slate-800 transition duration-300 font-bold py-2 rounded"
-        >
+        <button type="submit" className="btn btn-primary w-100">
           Register
         </button>
 
-        <p className="mt-6 text-center text-gray-400">
+        <p className="mt-3 text-center">
           Already have an account?{' '}
-          <Link to="/login" className="text-blue-500 hover:underline font-semibold">
+          <Link to="/login" className="text-primary text-decoration-none">
             Login
           </Link>
         </p>

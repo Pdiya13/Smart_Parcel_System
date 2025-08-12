@@ -2,119 +2,138 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-// import { jwtDecode } from 'jwt-decode';
 
 export default function Login() {
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-        role: 'user', 
-    });
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    role: 'user',
+  });
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const { email, password, role } = formData;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { email, password, role } = formData;
 
-        const loginUrl = role === 'user' 
-            ? 'http://localhost:8080/api/auth/user/login' 
-            : 'http://localhost:8080/api/auth/agent/login';
+    const loginUrl =
+      role === 'user'
+        ? 'http://localhost:8080/api/auth/user/login'
+        : 'http://localhost:8080/api/auth/agent/login';
 
-        try {
-            const res = await axios.post(loginUrl, {
-                email,
-                password
-            });
+    try {
+      const res = await axios.post(loginUrl, {
+        email,
+        password,
+      });
 
-            if (res.data.status === false) {
-                throw new Error("Invalid credentials");
-            }
+      if (res.data.status === false) {
+        throw new Error('Invalid credentials');
+      }
 
-            localStorage.setItem('token', res.data.token);
-            console.log("Login successful");
-            if (role === 'user') {
-                navigate('/dashboard');
-            } else if (role === 'agent') {
-                navigate('/agent-dashboard');
-            } else {
-                navigate('/login');
-            }
-        } catch (err) {
-            toast.error('Invalid User or Password');
-            console.error('Login error:', err.response?.data?.message || err.message);
-        }
-    };
+      localStorage.setItem('token', res.data.token);
+      console.log('Login successful');
+      if (role === 'user') {
+        navigate('/dashboard');
+      } else if (role === 'agent') {
+        navigate('/agent-dashboard');
+      } else {
+        navigate('/login');
+      }
+    } catch (err) {
+      toast.error('Invalid User or Password');
+      console.error('Login error:', err.response?.data?.message || err.message);
+    }
+  };
 
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-800 via-black to-gray-900">
-            <form
-                onSubmit={handleSubmit}
-                className="bg-gradient-to-br from-gray-800 to-black text-white px-8 py-10 rounded-xl shadow-xl w-full max-w-md"
-            >
-                <h2 className="text-3xl font-semibold mb-6 text-center tracking-wide">LOGIN</h2>
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full mb-4 px-4 py-2 bg-gray-800 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                />
+  return (
+    <div
+      className="d-flex justify-content-center align-items-center vh-100 bg-light"
+      style={{ background: 'linear-gradient(135deg, #000000, #434343)' }}
+    >
+      <form
+        onSubmit={handleSubmit}
+        className="bg-dark text-white p-5 rounded shadow"
+        style={{ width: '100%', maxWidth: '400px' }}
+      >
+        <h2 className="mb-4 text-center">LOGIN</h2>
 
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className="w-full mb-4 px-4 py-2 bg-gray-800 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                />
-
-                <div className="mb-4">
-                    <label className="block mb-2 text-sm text-gray-300">Select Role:</label>
-                    <div className="flex items-center space-x-6">
-                        <label>
-                            <input
-                                type="radio"
-                                name="role"
-                                value="user"
-                                checked={formData.role === 'user'}
-                                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                                className="mr-2"
-                            />
-                            User
-                        </label>
-                        <label>
-                            <input
-                                type="radio"
-                                name="role"
-                                value="agent"
-                                checked={formData.role === 'agent'}
-                                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                                className="mr-2"
-                            />
-                            Agent
-                        </label>
-                    </div>
-                </div>
-
-                <button
-                    type="submit"
-                    className="w-full bg-slate-700 hover:bg-slate-800 transition duration-300 font-bold py-2 rounded"
-                >
-                    Login
-                </button>
-
-                <p className="mt-6 text-center text-gray-400">
-                    Don't have an account?{' '}
-                    <Link to="/signup" className="text-blue-500 hover:underline font-semibold">
-                        SignUp
-                    </Link>
-                </p>
-            </form>
+        <div className="mb-3">
+          <label htmlFor="email" className="form-label">
+            Email address
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            className="form-control"
+            placeholder="Enter email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            required
+          />
         </div>
-    );
+
+        <div className="mb-3">
+          <label htmlFor="password" className="form-label">
+            Password
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            className="form-control"
+            placeholder="Enter password"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            required
+          />
+        </div>
+
+        <fieldset className="mb-3">
+          <legend className="col-form-label pt-0 text-white">Select Role:</legend>
+          <div className="form-check form-check-inline">
+            <input
+              className="form-check-input"
+              type="radio"
+              name="role"
+              id="roleUser"
+              value="user"
+              checked={formData.role === 'user'}
+              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+            />
+            <label className="form-check-label" htmlFor="roleUser">
+              User
+            </label>
+          </div>
+
+          <div className="form-check form-check-inline">
+            <input
+              className="form-check-input"
+              type="radio"
+              name="role"
+              id="roleAgent"
+              value="agent"
+              checked={formData.role === 'agent'}
+              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+            />
+            <label className="form-check-label" htmlFor="roleAgent">
+              Agent
+            </label>
+          </div>
+        </fieldset>
+
+        <button type="submit" className="btn btn-primary w-100">
+          Login
+        </button>
+
+        <p className="mt-3 text-center text-white-50">
+          Don't have an account?{' '}
+          <Link to="/signup" className="text-info text-decoration-none">
+            Sign Up
+          </Link>
+        </p>
+      </form>
+    </div>
+  );
 }
