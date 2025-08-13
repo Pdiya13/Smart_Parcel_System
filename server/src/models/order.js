@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 
 const orderSchema = new mongoose.Schema({
     from: {
@@ -27,6 +28,10 @@ const orderSchema = new mongoose.Schema({
         enum: ['PENDING', 'ASSIGNED', 'PICKED_UP', 'IN_TRANSIT', 'DELIVERED', 'CANCELLED'],
         default: 'PENDING'
     },
+    userId: {
+        type: ObjectId,
+        ref: "User",
+  },
 });
 
 const Order = mongoose.model('Order', orderSchema);
