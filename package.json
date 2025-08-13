@@ -8,6 +8,6 @@
     "client": "cd client && npm run dev"
   },
   "devDependencies": {
-    "concurrently": "^8.0.0"
+    "concurrently": "^8.2.2"
   }
 }

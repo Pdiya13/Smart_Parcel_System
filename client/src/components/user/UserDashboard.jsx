@@ -35,7 +35,8 @@ const UserDashboard = () => {
           className="d-flex align-items-center gap-2 fw-semibold"
           aria-label="User Info"
         >
-          B1_CE091_Eva Raste <i className="bi bi-person-circle fs-4" aria-hidden="true"></i>
+          B1_CE091_Eva Raste{' '}
+          <i className="bi bi-person-circle fs-4" aria-hidden="true"></i>
         </div>
       </header>
 
@@ -54,7 +55,7 @@ const UserDashboard = () => {
             <thead className="table-light">
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">Carrier</th>
+                <th scope="col">Agent</th>
                 <th scope="col">Source</th>
                 <th scope="col">Destination</th>
                 <th scope="col">Status</th>
@@ -72,7 +73,7 @@ const UserDashboard = () => {
                 trips.map((trip, idx) => (
                   <tr key={trip.id || idx}>
                     <th scope="row">{idx + 1}</th>
-                    <td>{trip.carrier}</td>
+                    <td>{trip.agent}</td>
                     <td>{trip.source}</td>
                     <td>{trip.destination}</td>
                     <td>{trip.status}</td>

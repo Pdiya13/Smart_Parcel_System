@@ -8,9 +8,9 @@ import Login from './components/authentication/login';
 import UserDashboard from './components/user/UserDashboard';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import CarrierSelect from './components/user/CarrierSelect';
-import CarrierDashboard from './components/Carreier/CarrierDashboard';
-import ProfilePage from './components/Carreier/profile';
+import CarrierSelect from './components/user/AgentSelect';
+import CarrierDashboard from './components/agent/AgentDashboard';
+import ProfilePage from './components/agent/profile';
 
 function App() {
   return (
@@ -21,7 +21,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<UserDashboard />} />
         <Route path='/selectCarrier' element={<CarrierSelect/>}/>
-        <Route path='/carrierDashboard' element={<CarrierDashboard/>}/>
+        <Route path='/agentDashboard' element={<CarrierDashboard/>}/>
         <Route path='/profile' element={<ProfilePage/>}/>
       </Routes>
     </Router>

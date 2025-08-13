@@ -36,7 +36,7 @@ const login = async (req, res) => {
     const match = await comparePassword(password, user.password);
     if (!match) return res.status(401).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
     res.status(200).json({ status: true, message: "Login successful", token });
   } catch (err) {
     res.status(500).json({ status: false, message: "Login failed", error: err.message });
@@ -76,7 +76,7 @@ const agentlogin = async (req, res) => {
     const match = await comparePassword(password, agent.password);
     if (!match) return res.status(401).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ agentId: agent._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ id: agent._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
     res.status(200).json({ status: true, message: "Login successful", token });
   } catch (err) {
     res.status(500).json({ status: false, message: "Login failed", error: err.message });
