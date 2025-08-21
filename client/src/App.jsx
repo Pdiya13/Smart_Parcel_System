@@ -2,15 +2,15 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import Signup from './components/authentication/Signup';
 import Login from './components/authentication/login';
 import UserDashboard from './components/user/UserDashboard';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
-import CarrierSelect from './components/user/AgentSelect';
-import CarrierDashboard from './components/agent/AgentDashboard';
 import ProfilePage from './components/agent/profile';
+import AgentSelect from './components/user/AgentSelect';
+import AgentDashboard from './components/agent/AgentDashboard';
 
 function App() {
   return (
@@ -20,8 +20,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<UserDashboard />} />
-        <Route path='/selectCarrier' element={<CarrierSelect/>}/>
-        <Route path='/agentDashboard' element={<CarrierDashboard/>}/>
+        <Route path='/selectCarrier' element={<AgentSelect/>}/>
+        <Route path='/agentDashboard' element={<AgentDashboard/>}/>
         <Route path='/profile' element={<ProfilePage/>}/>
       </Routes>
     </Router>

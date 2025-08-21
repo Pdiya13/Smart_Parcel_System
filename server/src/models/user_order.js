@@ -10,7 +10,7 @@ const userOrderSchema = new mongoose.Schema(
     agentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Agent',
-      required: true,
+      required: false,
     },
     orderId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -23,6 +23,6 @@ const userOrderSchema = new mongoose.Schema(
   }
 );
 
-const UserOrder = mongoose.model('UserAgent', userOrderSchema);
+const UserOrder = mongoose.model('UserOrder', userOrderSchema);
 
 module.exports = UserOrder;
