@@ -9,14 +9,28 @@ const AgentDashboard = () => {
 
   const fetchOrders = async () => {
     try {
-      const token = localStorage.getItem("token"); // token saved after login
-      const { data } = await axios.get("/api/orders/agent-orders", {
+      const token = localStorage.getItem("token"); 
+      
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+      
+      const response = await axios.get("/api/orders/agent-orders", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (data.status) setOrders(data.orders);
+      
+      if (response.data.status) {
+        setOrders(response.data.orders);
+      }
       setLoading(false);
     } catch (err) {
-      console.error(err);
+      if (err.response?.status === 401) {
+        localStorage.removeItem("token");
+        navigate("/login");
+        return;
+      }
+      console.error("Error fetching orders:", err);
       setLoading(false);
     }
   };
@@ -34,7 +48,7 @@ const AgentDashboard = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert(`Accepted order ${id}`);
-      fetchOrders(); // refresh orders
+      fetchOrders(); 
     } catch (err) {
       console.error(err);
     }
@@ -49,7 +63,7 @@ const AgentDashboard = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert(`Rejected order ${id}`);
-      fetchOrders(); // refresh orders
+      fetchOrders(); 
     } catch (err) {
       console.error(err);
     }
@@ -69,7 +83,14 @@ const AgentDashboard = () => {
         </div>
       </div>
 
-      <h2 className="mb-4">User Orders</h2>
+      <h2 className="mb-4">Agent Orders</h2>
+      
+      {orders.length === 0 && !loading && (
+        <div className="alert alert-info">
+          <h5>No orders available</h5>
+          <p>There are currently no pending orders in your city. Orders will appear here when users place orders for pickup from your city.</p>
+        </div>
+      )}
 
       <table className="table table-bordered table-hover">
         <thead className="table-light">

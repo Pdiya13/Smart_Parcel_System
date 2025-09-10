@@ -1,7 +1,7 @@
 const Order = require('../models/order');
 const UserOrder = require('../models/user_order');
 const User = require("../models/user");
-const Agent = require("../models/agent");
+const { Agent } = require("../models/agent");
 
 // Place a new order
 const placeOrder = async (req, res) => {
@@ -58,23 +58,31 @@ const getOrdersForUser = async (req, res) => {
 
 const getOrdersForAgent = async (req, res) => {
   try {
-    // The agent id comes from token (after requireSignIn middleware)
     const agentId = req.user.id;
-
-    // Find agent to get the city
+    
+    if (!agentId) {
+      return res.status(401).json({ status: false, message: "Invalid authentication" });
+    }
+    
     const agent = await Agent.findById(agentId);
-    if (!agent) return res.status(404).json({ message: "Agent not found" });
+    
+    if (!agent) {
+      return res.status(404).json({ status: false, message: "Agent not found" });
+    }
 
-    // Fetch all orders where order.from matches agent.city
-    const orders = await Order.find({ from: agent.city, status: "PENDING" })
-      .populate("userId", "name email phone")  // populate user info
+    const orders = await Order.find({ 
+      from: agent.city,
+      status: "PENDING" 
+    })
+      .populate("userId", "name email phone city")  
       .sort({ date: 1 });
-
+    
     res.status(200).json({ status: true, orders });
   } catch (err) {
+    console.error("Error in getOrdersForAgent:", err);
     res.status(500).json({ status: false, message: "Failed to fetch orders", error: err.message });
   }
 };
 
 
-module.exports = { placeOrder, getOrdersForUser,getOrdersForAgent };
+module.exports = { placeOrder, getOrdersForUser, getOrdersForAgent };

@@ -15,7 +15,7 @@ app.use(express.json());
 
 
 app.use("/api/auth", authRoutes);
-app.use("/api/order", orderRoutes);
+app.use("/api/orders", orderRoutes);
 app.use("/api/profile", profileRoutes);
 
 app.get("/", (req, res) => {

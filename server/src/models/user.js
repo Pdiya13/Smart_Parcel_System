@@ -17,7 +17,12 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   phone: { type: String },    
-  address: { type: String }  
+  address: { type: String },
+  city: { 
+    type: String, 
+    required: true,
+    trim: true
+  }
 });
 
 const User = mongoose.model('User', userSchema);
