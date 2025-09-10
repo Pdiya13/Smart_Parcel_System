@@ -11,6 +11,7 @@ import UserDashboard from './components/user/UserDashboard';
 import ProfilePage from './components/agent/profile';
 import AgentSelect from './components/user/AgentSelect';
 import AgentDashboard from './components/agent/AgentDashboard';
+import UserProfilePage from './components/user/UserProfilePage';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path='/selectCarrier' element={<AgentSelect/>}/>
         <Route path='/agentDashboard' element={<AgentDashboard/>}/>
         <Route path='/profile' element={<ProfilePage/>}/>
+        <Route path='/userProfile' element={<UserProfilePage/>}/>
       </Routes>
     </Router>
   );

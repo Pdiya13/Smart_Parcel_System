@@ -48,9 +48,9 @@ const UserDashboard = () => {
           <div
             className="d-flex align-items-center gap-2 fw-semibold"
             style={{ cursor: "pointer" }}
-            onClick={() => navigate("/profile")}
+            onClick={() => navigate("/userProfile")}
           >
-          Dashboard <i className="bi bi-person-circle fs-4"></i>
+          Profile <i className="bi bi-person-circle fs-4"></i>
           </div>
       </header>
 

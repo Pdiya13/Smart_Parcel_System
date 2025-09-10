@@ -9,9 +9,7 @@ export default function AgentSelect() {
   const [date, setDate] = useState('');
   const [weight, setWeight] = useState('');
   const [cities, setCities] = useState([]);
-
   const navigate = useNavigate();
-
 
   useEffect(() => {
     async function fetchCities() {
@@ -45,9 +43,7 @@ export default function AgentSelect() {
           date,
           weight: Number(weight),
         },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       if (res.data.status) {
@@ -135,6 +131,15 @@ export default function AgentSelect() {
 
         <button type="submit" className="btn btn-primary w-100 mt-auto">
           Place Order
+        </button>
+
+        {/* ✅ Button to go to Dashboard */}
+        <button
+          type="button"
+          className="btn btn-secondary w-100 mt-2"
+          onClick={() => navigate('/dashboard')}
+        >
+          Go to Dashboard
         </button>
       </form>
     </div>
