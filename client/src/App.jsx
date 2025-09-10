@@ -23,7 +23,7 @@ function App() {
         <Route path="/dashboard" element={<UserDashboard />} />
         <Route path='/selectCarrier' element={<AgentSelect/>}/>
         <Route path='/agentDashboard' element={<AgentDashboard/>}/>
-        <Route path='/profile' element={<ProfilePage/>}/>
+        <Route path='/CarrierProfile' element={<ProfilePage/>}/>
         <Route path='/userProfile' element={<UserProfilePage/>}/>
       </Routes>
     </Router>

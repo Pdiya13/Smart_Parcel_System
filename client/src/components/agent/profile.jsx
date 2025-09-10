@@ -1,130 +1,156 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
-const ProfilePage = () => {
-  const [user, setUser] = useState({
-    fullName: 'B1_CE089_DIYA PATEL',
-    role: 'Agent',
-    email: '23ceuos108@ddu.ac.in',
-    phone: '',
-    address: '',
-    walletBalance: 0,
-  });
+const CarrierProfile = () => {
+  const [agent, setAgent] = useState(null);
+  const [formData, setFormData] = useState({ name: "", phoneNo: "", city: "", email: "" });
+  const [editMode, setEditMode] = useState(false);
+  const navigate = useNavigate();
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({ ...user });
+  const token = localStorage.getItem("token");
 
-  const handleEditClick = () => setIsEditing(true);
-  const handleInputChange = (e) =>
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  const handleSave = () => {
-    setUser(formData);
-    setIsEditing(false);
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!token) return navigate("/login");
+
+      try {
+        const res = await axios.get("http://localhost:8080/api/profile/agent", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setAgent(res.data.agent);
+        setFormData({
+          name: res.data.agent.name,
+          phoneNo: res.data.agent.phoneNo,
+          city: res.data.agent.city,
+          email: res.data.agent.email,
+        });
+      } catch (err) {
+        console.error("Failed to fetch profile:", err);
+        toast.error("Failed to fetch profile");
+      }
+    };
+
+    fetchProfile();
+  }, [token, navigate]);
+
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const handleUpdate = async () => {
+    try {
+      const res = await axios.put(
+        "http://localhost:8080/api/profile/agent",
+        { name: formData.name, phoneNo: formData.phoneNo, city: formData.city },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setAgent(res.data.agent);
+      setEditMode(false);
+      toast.success("Profile updated successfully!");
+    } catch (err) {
+      console.error("Update failed:", err.response?.data?.message || err.message);
+      toast.error("Failed to update profile");
+    }
   };
 
-  const initial = user.fullName.charAt(0).toUpperCase();
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    toast.success("Logged out successfully!");
+    navigate("/login");
+  };
+
+  if (!agent) return <div className="text-center text-gray-600 mt-8">Loading...</div>;
 
   return (
-    <div className="container mt-5" style={{ maxWidth: '600px' }}>
-
-      <div className="bg-primary" style={{ height: '112px' }}></div>
-
-
-      <div
-        className="position-relative rounded-circle bg-primary text-white d-flex align-items-center justify-content-center border border-white"
-        style={{
-          width: '80px',
-          height: '80px',
-          top: '-40px',
-          left: '30px',
-          fontSize: '2.5rem',
-          fontWeight: '700',
-          zIndex: 1,
-        }}
+    <div className="flex flex-col items-center mt-6">
+      <button
+        onClick={() => navigate("/dashboard")}
+        className="mb-4 bg-gray-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-600 transition"
       >
-        {initial}
-      </div>
+        Go to Dashboard
+      </button>
 
+      <div className="w-full max-w-sm bg-white shadow-md rounded-xl p-4">
+        <h2 className="text-xl font-semibold text-center text-blue-600 mb-2">Carrier Profile</h2>
 
-      <div className="bg-white rounded shadow p-4 mt-n4">
+        {!editMode ? (
+          <div className="space-y-2 text-sm">
+            <p><strong>Name:</strong> {agent.name}</p>
+            <p><strong>Email:</strong> {agent.email}</p>
+            <p><strong>Phone:</strong> {agent.phoneNo}</p>
+            <p><strong>City:</strong> {agent.city}</p>
 
-        <div className="d-flex justify-content-between align-items-center mb-2">
-          <h2 className="h4 mb-0">{user.fullName}</h2>
-          {!isEditing ? (
-            <button
-              onClick={handleEditClick}
-              className="btn btn-primary"
-              type="button"
-            >
-              Edit Profile
-            </button>
-          ) : (
-            <button
-              onClick={handleSave}
-              className="btn btn-success"
-              type="button"
-            >
-              Save
-            </button>
-          )}
-        </div>
-        <p className="text-muted">{user.role}</p>
+            <div className="flex flex-col space-y-4 mt-2">
+              <button
+                onClick={() => setEditMode(true)}
+                className="w-full bg-blue-500 text-white py-1.5 rounded-lg text-sm hover:bg-blue-600 transition"
+              >
+                Edit Profile
+              </button>
 
-        <form>
-          {[
-            { label: 'Full Name', name: 'fullName', icon: '👤' },
-            { label: 'Email', name: 'email', icon: '📧' },
-            { label: 'Phone', name: 'phone', icon: '📞' },
-            { label: 'Address', name: 'address', icon: '📍' },
-          ].map(({ label, name, icon }) => (
-            <div className="mb-3 d-flex align-items-center gap-3" key={name}>
-              <span style={{ fontSize: '1.5rem' }}>{icon}</span>
-              <input
-                type="text"
-                name={name}
-                value={formData[name]}
-                onChange={handleInputChange}
-                disabled={!isEditing}
-                placeholder={label}
-                className={`form-control ${!isEditing ? 'bg-light' : ''}`}
-              />
+              <button
+                onClick={handleLogout}
+                className="m-2 w-full bg-red-500 text-white py-1.5 rounded-lg text-sm hover:bg-red-600 transition"
+              >
+                Logout
+              </button>
             </div>
-          ))}
-        </form>
-
-        <div className="border rounded bg-light p-3 mt-4">
-          <h5 className="d-flex align-items-center mb-3">
-            <span className="me-2">💼</span> Wallet
-          </h5>
-          <p className="text-warning small mb-3">
-            ⚠️ These transactions are dummy and for testing purposes only.
-          </p>
-          <div className="d-flex align-items-center gap-3 flex-wrap">
-            <div>
-              <div className="fw-semibold">Available Balance:</div>
-              <div className="text-success fw-bold fs-4">
-                ₹ {user.walletBalance}
-              </div>
-            </div>
+          </div>
+        ) : (
+          <div className="space-y-3 text-sm">
             <input
               type="text"
-              placeholder="yourname@upi"
-              className="form-control"
-              style={{ maxWidth: '180px' }}
+              name="name"
+              placeholder="Name"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full border rounded-md px-2 py-1"
             />
-            <button
-              disabled={user.walletBalance <= 0}
-              className={`btn ${
-                user.walletBalance > 0 ? 'btn-primary' : 'btn-secondary'
-              }`}
-              type="button"
-            >
-              Withdraw ₹{user.walletBalance}
-            </button>
+            <input
+              type="text"
+              name="email"
+              value={formData.email}
+              disabled
+              className="w-full border rounded-md px-2 py-1 bg-gray-100 text-gray-500 cursor-not-allowed"
+            />
+            <input
+              type="text"
+              name="phoneNo"
+              placeholder="Phone"
+              value={formData.phoneNo}
+              onChange={handleChange}
+              className="w-full border rounded-md px-2 py-1"
+            />
+            <input
+              type="text"
+              name="city"
+              placeholder="City"
+              value={formData.city}
+              onChange={handleChange}
+              className="w-full border rounded-md px-2 py-1"
+            />
+
+            <div className="flex gap-4 mt-2">
+              <button
+                onClick={handleUpdate}
+                className="flex-1 bg-green-500 text-white py-1.5 rounded-lg hover:bg-green-600 transition"
+              >
+                Save
+              </button>
+              <button
+                onClick={() => setEditMode(false)}
+                className="flex-1 bg-gray-400 text-white py-1.5 rounded-lg hover:bg-gray-500 transition"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default ProfilePage;
+export default CarrierProfile;
