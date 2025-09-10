@@ -19,7 +19,7 @@ const UserDashboard = () => {
           return;
         }
 
-        const res = await axios.get("http://localhost:8080/api/order/userOrders", {
+        const res = await axios.get("http://localhost:8080/api/orders/userOrders", {
           headers: { Authorization: `Bearer ${token}` },
         });
 

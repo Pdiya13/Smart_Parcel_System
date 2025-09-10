@@ -36,7 +36,7 @@ export default function AgentSelect() {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.post(
-        'http://localhost:8080/api/order/agentSelect',
+        'http://localhost:8080/api/orders/agentSelect',
         {
           from: fromCity,
           to: toCity,
