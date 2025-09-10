@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast"; 
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -13,6 +14,7 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
+      if (!token) return navigate("/login"); 
       try {
         const res = await axios.get("http://localhost:8080/api/profile/user", {
           headers: { Authorization: `Bearer ${token}` },
@@ -26,11 +28,12 @@ const Profile = () => {
         });
       } catch (err) {
         console.error("Failed to fetch profile:", err);
+        toast.error("Failed to fetch profile");
       }
     };
 
     fetchProfile();
-  }, [token]);
+  }, [token, navigate]);
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -43,18 +46,24 @@ const Profile = () => {
       );
       setUser(res.data.user);
       setEditMode(false);
-      setMessage("Profile updated successfully!");
+      toast.success("Profile updated successfully!");
     } catch (err) {
       console.error("Update failed:", err.response?.data?.message || err.message);
-      setMessage("Failed to update profile.");
+      toast.error("Failed to update profile");
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token"); 
+    toast.success("Logged out successfully!");
+    navigate("/login"); 
   };
 
   if (!user) return <div className="text-center text-gray-600 mt-8">Loading...</div>;
 
   return (
     <div className="flex flex-col items-center mt-6">
-      {/* ✅ Go to Dashboard Button at the Top */}
+     
       <button
         onClick={() => navigate("/dashboard")}
         className="mb-4 bg-gray-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-600 transition"
@@ -74,12 +83,19 @@ const Profile = () => {
             <p><strong>Phone:</strong> {user.phone}</p>
             <p><strong>Address:</strong> {user.address}</p>
 
-            {/* Edit Button */}
+    
             <button
               onClick={() => setEditMode(true)}
               className="w-full bg-blue-500 text-white py-1.5 rounded-lg text-sm hover:bg-blue-600 transition"
             >
-              Edit
+              Edit Profile
+            </button>
+
+            <button
+              onClick={handleLogout}
+              className="m-2 w-full bg-red-500 text-white py-1.5 rounded-lg text-sm hover:bg-red-600 transition mt-2"
+            >
+              Logout
             </button>
           </div>
         ) : (

@@ -5,7 +5,7 @@ const AgentDashboard = () => {
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch orders from backend
+
   const fetchOrders = async () => {
     try {
       const res = await axios.get('http://localhost:5000/api/orders');
@@ -23,7 +23,7 @@ const AgentDashboard = () => {
 
   return (
     <div className="min-vh-100 p-4 bg-light font-monospace">
-      {/* Header */}
+
       <header className="d-flex justify-content-between align-items-center p-3 mb-4 bg-white rounded shadow-sm">
         <div className="d-flex align-items-center gap-3">
           <span style={{ fontSize: '1.5rem' }}>📦</span>
@@ -35,7 +35,6 @@ const AgentDashboard = () => {
         </div>
       </header>
 
-      {/* Trips Table */}
       <section className="bg-white rounded shadow-sm p-4">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h3 className="fs-5 fw-semibold m-0">Your Trips</h3>

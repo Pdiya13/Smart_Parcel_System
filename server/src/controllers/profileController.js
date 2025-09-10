@@ -1,17 +1,14 @@
 const User = require("../models/user");
 
-// Fetch logged-in user's profile
 const getProfile = async (req, res) => {
   try {
-    // req.user.id is populated by requireSignIn middleware after decoding JWT
     const user = await User.findById(req.user.id)
-      .select("name email phone address"); // only return fields your frontend needs
+      .select("name email phone address"); 
 
     if (!user) {
       return res.status(404).json({ status: false, message: "User not found" });
     }
 
-    // Format response to match frontend expectations
     res.status(200).json({
       status: true,
       user: {

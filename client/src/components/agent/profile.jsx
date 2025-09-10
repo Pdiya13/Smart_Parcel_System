@@ -25,10 +25,10 @@ const ProfilePage = () => {
 
   return (
     <div className="container mt-5" style={{ maxWidth: '600px' }}>
-      {/* Header banner */}
+
       <div className="bg-primary" style={{ height: '112px' }}></div>
 
-      {/* Avatar circle */}
+
       <div
         className="position-relative rounded-circle bg-primary text-white d-flex align-items-center justify-content-center border border-white"
         style={{
@@ -44,9 +44,9 @@ const ProfilePage = () => {
         {initial}
       </div>
 
-      {/* Content */}
+
       <div className="bg-white rounded shadow p-4 mt-n4">
-        {/* Name and role */}
+
         <div className="d-flex justify-content-between align-items-center mb-2">
           <h2 className="h4 mb-0">{user.fullName}</h2>
           {!isEditing ? (
@@ -69,7 +69,6 @@ const ProfilePage = () => {
         </div>
         <p className="text-muted">{user.role}</p>
 
-        {/* Form fields */}
         <form>
           {[
             { label: 'Full Name', name: 'fullName', icon: '👤' },
@@ -92,7 +91,6 @@ const ProfilePage = () => {
           ))}
         </form>
 
-        {/* Wallet section */}
         <div className="border rounded bg-light p-3 mt-4">
           <h5 className="d-flex align-items-center mb-3">
             <span className="me-2">💼</span> Wallet
