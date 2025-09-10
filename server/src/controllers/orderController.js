@@ -11,14 +11,7 @@ const placeOrder = async (req, res) => {
       return res.status(400).json({ status: false, message: "Please provide all fields." });
     }
 
-    const newOrder = new Order({
-      from,
-      to,
-      weight,
-      date,
-      userId,
-    });
-
+    const newOrder = new Order({ from, to, weight, date, userId });
     await newOrder.save();
 
     res.status(201).json({
@@ -28,11 +21,7 @@ const placeOrder = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({
-      status: false,
-      message: "Failed to place order",
-      error: err.message
-    });
+    res.status(500).json({ status: false, message: "Failed to place order", error: err.message });
   }
 };
 
@@ -60,11 +49,7 @@ const getOrdersForUser = async (req, res) => {
     res.json({ status: true, orders: ordersWithAgents });
   } catch (err) {
     console.error(err);
-    res.status(500).json({
-      status: false,
-      message: 'Error fetching orders',
-      error: err.message
-    });
+    res.status(500).json({ status: false, message: 'Error fetching orders', error: err.message });
   }
 };
 

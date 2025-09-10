@@ -1,24 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom'; 
-
-const cities = [
-  'New York',
-  'Los Angeles',
-  'Chicago',
-  'Houston',
-  'Phoenix',
-  'Philadelphia',
-];
+import { useNavigate } from 'react-router-dom';
 
 export default function AgentSelect() {
   const [fromCity, setFromCity] = useState('');
   const [toCity, setToCity] = useState('');
   const [date, setDate] = useState('');
   const [weight, setWeight] = useState('');
+  const [cities, setCities] = useState([]);
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+
+
+  useEffect(() => {
+    async function fetchCities() {
+      try {
+        const res = await axios.get('http://localhost:8080/api/auth/agent/allowedCities');
+        if (res.data && res.data.cities) {
+          setCities(res.data.cities);
+        }
+      } catch (err) {
+        console.error('Failed to fetch cities', err);
+        toast.error('Failed to fetch cities!');
+      }
+    }
+    fetchCities();
+  }, []);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -28,7 +36,7 @@ export default function AgentSelect() {
     }
 
     try {
-      const token = localStorage.getItem('token'); 
+      const token = localStorage.getItem('token');
       const res = await axios.post(
         'http://localhost:8080/api/order/agentSelect',
         {
