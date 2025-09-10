@@ -66,7 +66,7 @@ const CarrierProfile = () => {
   return (
     <div className="flex flex-col items-center mt-6">
       <button
-        onClick={() => navigate("/dashboard")}
+        onClick={() => navigate("/agentDashboard")}
         className="mb-4 bg-gray-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-600 transition"
       >
         Go to Dashboard

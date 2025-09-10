@@ -36,7 +36,7 @@ export default function Login() {
       if (role === 'user') {
         navigate('/dashboard');
       } else if (role === 'agent') {
-        navigate('/agent-dashboard');
+        navigate('/agentDashboard');
       } else {
         navigate('/login');
       }

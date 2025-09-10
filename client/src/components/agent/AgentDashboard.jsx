@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const AgentDashboard = () => {
-  const [trips, setTrips] = useState([]);
+  const navigate = useNavigate();
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/orders');
-      setTrips(res.data.orders);
+      const token = localStorage.getItem("token"); // token saved after login
+      const { data } = await axios.get("/api/orders/agent-orders", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (data.status) setOrders(data.orders);
       setLoading(false);
     } catch (err) {
-      console.error("Error fetching orders", err);
+      console.error(err);
       setLoading(false);
     }
   };
@@ -21,80 +25,95 @@ const AgentDashboard = () => {
     fetchOrders();
   }, []);
 
+  const handleAccept = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `/api/orders/${id}/accept`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert(`Accepted order ${id}`);
+      fetchOrders(); // refresh orders
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleReject = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `/api/orders/${id}/reject`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert(`Rejected order ${id}`);
+      fetchOrders(); // refresh orders
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  if (loading) return <div className="p-4">Loading orders...</div>;
+
   return (
-    <div className="min-vh-100 p-4 bg-light font-monospace">
-
-      <header className="d-flex justify-content-between align-items-center p-3 mb-4 bg-white rounded shadow-sm">
-        <div className="d-flex align-items-center gap-3">
-          <span style={{ fontSize: '1.5rem' }}>📦</span>
-          <h1 className="m-0 fw-bold fs-4">Samaan</h1>
+    <div className="p-4 bg-light min-vh-100">
+      <div className="d-flex justify-content-end mb-3">
+        <div
+          className="d-flex align-items-center gap-2 fw-semibold"
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate("/CarrierProfile")}
+        >
+          Profile <i className="bi bi-person-circle fs-4"></i>
         </div>
-        <div className="d-flex align-items-center gap-2 text-secondary">
-          <span>B1_CE089_DIYA PATEL</span>
-          <span>👤</span>
-        </div>
-      </header>
+      </div>
 
-      <section className="bg-white rounded shadow-sm p-4">
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <h3 className="fs-5 fw-semibold m-0">Your Trips</h3>
-          <div className="d-flex gap-2">
-            <button type="button" className="btn btn-primary">
-              Chats
-            </button>
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={() => {
-                const from = prompt("From city?");
-                const to = prompt("To city?");
-                const weight = prompt("Weight?");
-                const date = prompt("Date? (YYYY-MM-DD)");
-                if (from && to && weight && date) {
-                  axios.post('http://localhost:5000/api/orders', { from, to, weight, date })
-                    .then(() => fetchOrders());
-                }
-              }}
-            >
-              Add New Trip
-            </button>
-          </div>
-        </div>
+      <h2 className="mb-4">User Orders</h2>
 
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          <table className="table table-hover mb-0">
-            <thead className="table-light">
-              <tr>
-                {['ID', 'FROM', 'TO', 'DATE', 'WEIGHT', 'STATUS'].map((header) => (
-                  <th key={header}>{header}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {trips.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="text-center text-muted py-5">
-                    No trips available.
-                  </td>
-                </tr>
-              ) : (
-                trips.map((trip) => (
-                  <tr key={trip._id}>
-                    <td>{trip._id}</td>
-                    <td>{trip.from}</td>
-                    <td>{trip.to}</td>
-                    <td>{new Date(trip.date).toLocaleDateString()}</td>
-                    <td>{trip.weight} kg</td>
-                    <td>{trip.status}</td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        )}
-      </section>
+      <table className="table table-bordered table-hover">
+        <thead className="table-light">
+          <tr>
+            <th>User ID</th>
+            <th>User Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Date</th>
+            <th>Weight (kg)</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {orders.map((order) => (
+            <tr key={order._id}>
+              <td>{order.userId._id}</td>
+              <td>{order.userId.name}</td>
+              <td>{order.userId.email}</td>
+              <td>{order.userId.phone}</td>
+              <td>{order.from}</td>
+              <td>{order.to}</td>
+              <td>{new Date(order.date).toLocaleDateString()}</td>
+              <td>{order.weight}</td>
+              <td>
+                <button
+                  className="btn btn-success btn-sm me-2"
+                  onClick={() => handleAccept(order._id)}
+                >
+                  Accept
+                </button>
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => handleReject(order._id)}
+                >
+                  Reject
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

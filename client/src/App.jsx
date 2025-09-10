@@ -10,8 +10,8 @@ import Login from './components/authentication/login';
 import UserDashboard from './components/user/UserDashboard';
 import ProfilePage from './components/agent/profile';
 import AgentSelect from './components/user/AgentSelect';
-import AgentDashboard from './components/agent/AgentDashboard';
 import UserProfilePage from './components/user/UserProfilePage';
+import AgentDashboard from './components/agent/AgentDashboard';
 
 function App() {
   return (
@@ -22,9 +22,11 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<UserDashboard />} />
         <Route path='/selectCarrier' element={<AgentSelect/>}/>
-        <Route path='/agentDashboard' element={<AgentDashboard/>}/>
-        <Route path='/CarrierProfile' element={<ProfilePage/>}/>
         <Route path='/userProfile' element={<UserProfilePage/>}/>
+        
+        <Route path='/CarrierProfile' element={<ProfilePage/>}/>
+        <Route path='/agentDashboard' element={<AgentDashboard/>}/>
+       
       </Routes>
     </Router>
   );
