@@ -19,7 +19,7 @@ const userOrderSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, 
+    timestamps: true,
   }
 );
 
