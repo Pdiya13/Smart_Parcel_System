@@ -5,19 +5,17 @@ const { hashPassword, comparePassword } = require("../helpers/authHelper");
 
 const signup = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, phone, address, city } = req.body;
 
     if (!name || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
+      return res.status(400).json({ message: "Name, email, and password are required" });
     }
 
     const existing = await User.findOne({ email });
-    if (existing) {
-      return res.status(400).json({ message: "Email already exists" });
-    }
+    if (existing) return res.status(400).json({ message: "Email already exists" });
 
     const hashed = await hashPassword(password);
-    const newUser = new User({ name, email, password: hashed });
+    const newUser = new User({ name, email, password: hashed, phone, address, city });
     await newUser.save();
 
     res.status(201).json({ status: true, message: "User registered successfully" });
@@ -51,10 +49,12 @@ const agentsignup = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const existing = await Agent.findOne({ email });
-    if (existing) {
-      return res.status(400).json({ message: "Email already exists" });
+    if (!allowedCitiesArray.includes(city)) {
+      return res.status(400).json({ message: "Invalid city" });
     }
+
+    const existing = await Agent.findOne({ email });
+    if (existing) return res.status(400).json({ message: "Email already exists" });
 
     const hashed = await hashPassword(password);
     const newAgent = new Agent({ name, email, password: hashed, city, phoneNo });

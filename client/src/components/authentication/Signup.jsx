@@ -41,13 +41,14 @@ export default function Signup() {
     try {
       let res;
       if (formData.role === 'user') {
-        res = await axios.post('http://localhost:8080/api/auth/user/signup', {
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          role: formData.role,
-        });
-      } else {
+            res = await axios.post('http://localhost:8080/api/auth/user/signup', {
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+            phone: formData.phoneNo || undefined, 
+            city: formData.city || undefined   
+      });
+} else {
         res = await axios.post('http://localhost:8080/api/auth/agent/signup', {
           name: formData.name,
           email: formData.email,
