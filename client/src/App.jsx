@@ -1,4 +1,3 @@
-// App.jsx
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
@@ -12,7 +11,9 @@ import ProfilePage from './components/agent/profile';
 import AgentSelect from './components/user/AgentSelect';
 import UserProfilePage from './components/user/UserProfilePage';
 import AgentDashboard from './components/agent/AgentDashboard';
-
+import FindOptimalPath from './components/agent/FindOptimalPath';
+import AgentHistory from './components/agent/AgentHistory';
+import TrackOrder from './components/user/TrackOrder';
 function App() {
   return (
     <Router>
@@ -26,7 +27,10 @@ function App() {
         
         <Route path='/CarrierProfile' element={<ProfilePage/>}/>
         <Route path='/agentDashboard' element={<AgentDashboard/>}/>
-       
+        <Route path='/FindOptimalPath' element={<FindOptimalPath />} />
+        <Route path='/AgentHistory' element={<AgentHistory />} />
+
+        <Route path='/track/:id' element={<TrackOrder/>}/>
       </Routes>
     </Router>
   );

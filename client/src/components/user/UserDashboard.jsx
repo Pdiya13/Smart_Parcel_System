@@ -7,7 +7,7 @@ const UserDashboard = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -40,24 +40,23 @@ const UserDashboard = () => {
         className="d-flex justify-content-between align-items-center p-3 mb-3 rounded"
         style={{ backgroundColor: "#e8eaff" }}
       >
-          <div className="d-flex align-items-center gap-2">
-            <i className="bi bi-box-seam fs-3 text-primary"></i>
-            <span className="fs-4 fw-semibold">Samaan</span>
-          </div>
+        <div className="d-flex align-items-center gap-2">
+          <i className="bi bi-box-seam fs-3 text-primary"></i>
+          <span className="fs-4 fw-semibold">Samaan</span>
+        </div>
 
-          <div
-            className="d-flex align-items-center gap-2 fw-semibold"
-            style={{ cursor: "pointer" }}
-            onClick={() => navigate("/userProfile")}
-          >
+        <div
+          className="d-flex align-items-center gap-2 fw-semibold"
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate("/userProfile")}
+        >
           Profile <i className="bi bi-person-circle fs-4"></i>
-          </div>
+        </div>
       </header>
 
       <main className="flex-grow-1 bg-white rounded shadow p-4 overflow-auto">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h3 className="fw-bold">Your Orders</h3>
-          {}
           <button
             className="btn btn-primary"
             onClick={() => navigate("/selectCarrier")}
@@ -68,6 +67,7 @@ const UserDashboard = () => {
 
         {loading && <p>Loading orders...</p>}
         {error && <p className="text-danger">{error}</p>}
+
         {!loading && !error && (
           <div className="table-responsive">
             <table className="table table-hover table-bordered rounded mb-0">
@@ -81,12 +81,13 @@ const UserDashboard = () => {
                   <th>Weight (kg)</th>
                   <th>Date</th>
                   <th>Status</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {orders.length === 0 ? (
                   <tr>
-                    <td colSpan="8" className="text-center py-4">
+                    <td colSpan="9" className="text-center py-4">
                       No orders found.
                     </td>
                   </tr>
@@ -101,6 +102,18 @@ const UserDashboard = () => {
                       <td>{order.weight}</td>
                       <td>{moment(order.date).format("YYYY-MM-DD")}</td>
                       <td>{order.status}</td>
+                      <td>
+                        {order.agent ? (
+                          <button
+                            className="btn btn-sm btn-success"
+                            onClick={() => navigate(`/track/${order._id}`)}
+                          >
+                            Track
+                          </button>
+                        ) : (
+                          <span className="text-muted">Waiting for agent</span>
+                        )}
+                      </td>
                     </tr>
                   ))
                 )}
