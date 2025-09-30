@@ -20,7 +20,6 @@ const FindOptimalPath = () => {
 
   const navigate = useNavigate();
 
-  // fetch allowed cities
   useEffect(() => {
     async function fetchCities() {
       try {
@@ -41,7 +40,6 @@ const FindOptimalPath = () => {
     fetchCities();
   }, []);
 
-  // fetch profile
   useEffect(() => {
     const fetchProfile = async () => {
       const token = localStorage.getItem("token");
@@ -63,7 +61,7 @@ const FindOptimalPath = () => {
     fetchProfile();
   }, [navigate]);
 
-  // initialize map
+  
   useEffect(() => {
     if (!mapContainerRef.current) return;
     if (mapRef.current) return;
@@ -73,7 +71,7 @@ const FindOptimalPath = () => {
     });
   }, []);
 
-  // helper: get coordinates for a city
+
   async function getCoordinates(location) {
     try {
       const response = await fetch(
@@ -92,7 +90,6 @@ const FindOptimalPath = () => {
     }
   }
 
-  // helper: get route geometry from Mapbox Directions API
   async function getRoute(start, end) {
     try {
       const query = await fetch(
@@ -100,7 +97,7 @@ const FindOptimalPath = () => {
       );
       const data = await query.json();
       if (data.routes && data.routes.length > 0) {
-        return data.routes[0].geometry; // GeoJSON LineString
+        return data.routes[0].geometry; 
       }
       return null;
     } catch (err) {
@@ -109,13 +106,11 @@ const FindOptimalPath = () => {
     }
   }
 
-  // clear old markers
   function clearMarkers() {
     markersRef.current.forEach((m) => m.remove());
     markersRef.current = [];
   }
 
-  // center map on source
   useEffect(() => {
     (async () => {
       if (source && mapRef.current) {
@@ -133,7 +128,6 @@ const FindOptimalPath = () => {
     })();
   }, [source]);
 
-  // handle Find button click
   const handleClick = async (e) => {
     e.preventDefault();
 
@@ -156,7 +150,6 @@ const FindOptimalPath = () => {
       const sourceCoords = await getCoordinates(source);
       if (!mapRef.current || !sourceCoords) return;
 
-      // clear old routes
       mapRef.current
         .getStyle()
         .layers.forEach((layer) => {
@@ -168,16 +161,13 @@ const FindOptimalPath = () => {
           }
         });
 
-      // clear markers
       clearMarkers();
 
-      // add source marker
       const sourceMarker = new mapboxgl.Marker({ color: "green" })
         .setLngLat(sourceCoords)
         .addTo(mapRef.current);
       markersRef.current.push(sourceMarker);
 
-      // destination markers + routes
       const colors = [
         "#FF5733",
         "#33FF57",
@@ -191,12 +181,10 @@ const FindOptimalPath = () => {
         const r = res.data.results[i];
         const color = colors[i % colors.length];
 
-        // get full path coords
         const coordsList = await Promise.all(
           r.path.map((city) => getCoordinates(city))
         );
 
-        // build route between consecutive cities in the path
         for (let j = 0; j < coordsList.length - 1; j++) {
           const start = coordsList[j];
           const end = coordsList[j + 1];
@@ -222,7 +210,6 @@ const FindOptimalPath = () => {
           });
         }
 
-        // add destination marker
         const lastCoord = coordsList[coordsList.length - 1];
         if (lastCoord) {
           const destMarker = new mapboxgl.Marker({ color: "red" })

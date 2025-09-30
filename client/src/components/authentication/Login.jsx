@@ -49,11 +49,10 @@ export default function Login() {
   return (
     <div
       className="d-flex justify-content-center align-items-center vh-100 bg-light"
-      style={{ background: 'linear-gradient(135deg, #000000, #434343)' }}
     >
       <form
         onSubmit={handleSubmit}
-        className="bg-dark text-white p-5 rounded shadow"
+        className=" text-white p-5 rounded shadow"
         style={{ width: '100%', maxWidth: '400px' }}
       >
         <h2 className="mb-4 text-center">LOGIN</h2>
