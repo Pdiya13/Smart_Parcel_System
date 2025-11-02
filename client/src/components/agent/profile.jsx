@@ -61,93 +61,176 @@ const CarrierProfile = () => {
     navigate("/login");
   };
 
-  if (!agent) return <div className="text-center text-gray-600 mt-8">Loading...</div>;
+  if (!agent) {
+    return (
+      <div className="min-h-screen" style={{ backgroundColor: "#f8f9fa" }}>
+        <header
+          className="d-flex justify-content-between align-items-center p-3 mb-3 rounded shadow-sm"
+          style={{ backgroundColor: "#e8eaff" }}
+        >
+          <div className="d-flex align-items-center gap-2">
+            <i className="bi bi-box-seam fs-3 text-primary"></i>
+            <span className="fs-4 fw-semibold">Samaan</span>
+          </div>
+        </header>
+        <div className="text-center text-gray-600 mt-8">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col items-center mt-6">
-      <button
-        onClick={() => navigate("/agentDashboard")}
-        className="mb-4 bg-gray-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-600 transition"
-      >
-        Go to Dashboard
-      </button>
+    <div className="min-h-screen" style={{ backgroundColor: "#f8f9fa" }}>
+      
 
-      <div className="w-full max-w-sm bg-white shadow-md rounded-xl p-4">
-        <h2 className="text-xl font-semibold text-center text-blue-600 mb-2">Carrier Profile</h2>
+      <div className="container" style={{ maxWidth: "600px" }}>
+     
 
-        {!editMode ? (
-          <div className="space-y-2 text-sm">
-            <p><strong>Name:</strong> {agent.name}</p>
-            <p><strong>Email:</strong> {agent.email}</p>
-            <p><strong>Phone:</strong> {agent.phoneNo}</p>
-            <p><strong>City:</strong> {agent.city}</p>
-
-            <div className="flex flex-col space-y-4 mt-2">
-              <button
-                onClick={() => setEditMode(true)}
-                className="w-full bg-blue-500 text-white py-1.5 rounded-lg text-sm hover:bg-blue-600 transition"
+        <div className="card shadow-sm border-0 rounded-3">
+          <div className="card-body p-4">
+            <div className="text-center mb-4">
+              <div
+                className="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle"
+                style={{
+                  width: "80px",
+                  height: "80px",
+                  backgroundColor: "#e8eaff",
+                }}
               >
-                Edit Profile
-              </button>
-
-              <button
-                onClick={handleLogout}
-                className="m-2 w-full bg-red-500 text-white py-1.5 rounded-lg text-sm hover:bg-red-600 transition"
-              >
-                Logout
-              </button>
+                <i className="bi bi-truck fs-1 text-primary"></i>
+              </div>
+              <h2 className="fs-4 fw-bold text-primary mb-1">Carrier Profile</h2>
             </div>
-          </div>
-        ) : (
-          <div className="space-y-3 text-sm">
-            <input
-              type="text"
-              name="name"
-              placeholder="Name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full border rounded-md px-2 py-1"
-            />
-            <input
-              type="text"
-              name="email"
-              value={formData.email}
-              disabled
-              className="w-full border rounded-md px-2 py-1 bg-gray-100 text-gray-500 cursor-not-allowed"
-            />
-            <input
-              type="text"
-              name="phoneNo"
-              placeholder="Phone"
-              value={formData.phoneNo}
-              onChange={handleChange}
-              className="w-full border rounded-md px-2 py-1"
-            />
-            <input
-              type="text"
-              name="city"
-              placeholder="City"
-              value={formData.city}
-              onChange={handleChange}
-              className="w-full border rounded-md px-2 py-1"
-            />
 
-            <div className="flex gap-4 mt-2">
-              <button
-                onClick={handleUpdate}
-                className="flex-1 bg-green-500 text-white py-1.5 rounded-lg hover:bg-green-600 transition"
-              >
-                Save
-              </button>
-              <button
-                onClick={() => setEditMode(false)}
-                className="flex-1 bg-gray-400 text-white py-1.5 rounded-lg hover:bg-gray-500 transition"
-              >
-                Cancel
-              </button>
-            </div>
+            {!editMode ? (
+              <div>
+                <div className="mb-3 p-3 rounded" style={{ backgroundColor: "#f8f9fa" }}>
+                  <label className="text-muted small mb-1 d-block">
+                    <i className="bi bi-person me-2"></i>Name
+                  </label>
+                  <p className="mb-0 fw-semibold">{agent.name}</p>
+                </div>
+
+                <div className="mb-3 p-3 rounded" style={{ backgroundColor: "#f8f9fa" }}>
+                  <label className="text-muted small mb-1 d-block">
+                    <i className="bi bi-envelope me-2"></i>Email
+                  </label>
+                  <p className="mb-0 fw-semibold">{agent.email}</p>
+                </div>
+
+                <div className="mb-3 p-3 rounded" style={{ backgroundColor: "#f8f9fa" }}>
+                  <label className="text-muted small mb-1 d-block">
+                    <i className="bi bi-telephone me-2"></i>Phone
+                  </label>
+                  <p className="mb-0 fw-semibold">{agent.phoneNo || "Not provided"}</p>
+                </div>
+
+                <div className="mb-4 p-3 rounded" style={{ backgroundColor: "#f8f9fa" }}>
+                  <label className="text-muted small mb-1 d-block">
+                    <i className="bi bi-geo-alt-fill me-2"></i>City
+                  </label>
+                  <p className="mb-0 fw-semibold">{agent.city || "Not provided"}</p>
+                </div>
+
+                <div className="d-flex gap-2">
+                  <button
+                    onClick={() => setEditMode(true)}
+                    className="btn btn-primary flex-fill d-flex align-items-center justify-content-center gap-2"
+                  >
+                    <i className="bi bi-pencil"></i>
+                    Edit Profile
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="btn btn-danger flex-fill d-flex align-items-center justify-content-center gap-2"
+                  >
+                    <i className="bi bi-box-arrow-right"></i>
+                    Logout
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div className="mb-3">
+                  <label className="form-label small fw-semibold">
+                    <i className="bi bi-person me-2"></i>Name
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter your name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label small fw-semibold">
+                    <i className="bi bi-envelope me-2"></i>Email
+                  </label>
+                  <input
+                    type="text"
+                    name="email"
+                    value={formData.email}
+                    disabled
+                    className="form-control"
+                    style={{ backgroundColor: "#e9ecef", cursor: "not-allowed" }}
+                  />
+                  <small className="text-muted">Email cannot be changed</small>
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label small fw-semibold">
+                    <i className="bi bi-telephone me-2"></i>Phone
+                  </label>
+                  <input
+                    type="text"
+                    name="phoneNo"
+                    placeholder="Enter your phone number"
+                    value={formData.phoneNo}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="form-label small fw-semibold">
+                    <i className="bi bi-geo-alt-fill me-2"></i>City
+                  </label>
+                  <input
+                    type="text"
+                    name="city"
+                    placeholder="Enter your city"
+                    value={formData.city}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                </div>
+
+                <div className="d-flex gap-2">
+                  <button
+                    onClick={handleUpdate}
+                    className="btn btn-success flex-fill d-flex align-items-center justify-content-center gap-2"
+                  >
+                    <i className="bi bi-check-circle"></i>
+                    Save Changes
+                  </button>
+                  <button
+                    onClick={() => setEditMode(false)}
+                    className="btn btn-secondary flex-fill d-flex align-items-center justify-content-center gap-2"
+                  >
+                    <i className="bi bi-x-circle"></i>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

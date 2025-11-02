@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
@@ -6,21 +6,22 @@ const TrackOrder = () => {
   const { id } = useParams();
   const [order, setOrder] = useState(null);
 
-  useEffect(() => {
-    const fetchOrder = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:8080/api/orders/userOrders", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const found = res.data.orders.find((o) => o._id === id);
-        setOrder(found);
-      } catch (err) {
-        console.error("Error fetching order:", err);
-      }
-    };
-    fetchOrder();
+  const fetchOrder = useCallback(async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get("http://localhost:8080/api/orders/userOrders", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const found = res.data.orders.find((o) => o._id === id);
+      if (found) setOrder(found);
+    } catch (err) {
+      console.error("Error fetching order:", err);
+    }
   }, [id]);
+
+  useEffect(() => {
+    fetchOrder();
+  }, [fetchOrder]);
 
   const handlePayment = async () => {
     try {
@@ -54,6 +55,8 @@ const TrackOrder = () => {
             },
             { headers: { Authorization: `Bearer ${token}` } }
           );
+
+          await fetchOrder();
         },
         prefill: {
           name: order.userId?.name || "Customer",
@@ -74,7 +77,6 @@ const TrackOrder = () => {
 
   return (
     <div className="container p-4">
-      <h2>Tracking Order: {order._id}</h2>
       <p><strong>Status:</strong> {order.status}</p>
       <p><strong>Agent:</strong> {order.agent?.name || "Not Assigned"}</p>
       <p><strong>From:</strong> {order.from}</p>

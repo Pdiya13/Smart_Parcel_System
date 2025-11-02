@@ -13,7 +13,7 @@ const requireSignIn = (req , res, next) => {
         }
 
         const decoded = jwt.verify(token , process.env.JWT_SECRET);
-        console.log(decoded);
+        //console.log(decoded);
 
         if(decoded) {
             req.user = decoded;

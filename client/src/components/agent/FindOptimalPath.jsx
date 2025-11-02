@@ -8,7 +8,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 const FindOptimalPath = () => {
   const mapContainerRef = useRef();
   const mapRef = useRef();
-  const markersRef = useRef([]); // store markers
+  const markersRef = useRef([]); 
   const [cities, setCities] = useState([]);
   const [source, setSource] = useState("");
   const [destination, setDestination] = useState([]);

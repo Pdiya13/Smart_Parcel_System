@@ -50,7 +50,6 @@ const AgentHistory = () => {
         <table className="table table-bordered table-hover">
           <thead className="table-light">
             <tr>
-              <th>Order ID</th>
               <th>User</th>
               <th>From</th>
               <th>To</th>
@@ -62,7 +61,6 @@ const AgentHistory = () => {
           <tbody>
             {orders.map((record) => (
               <tr key={record._id}>
-                <td>{record.orderId?._id}</td>
                 <td>{record.userId?.name}</td>
                 <td>{record.orderId?.from}</td>
                 <td>{record.orderId?.to}</td>

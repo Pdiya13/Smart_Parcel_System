@@ -7,6 +7,8 @@ const UserDashboard = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const ordersPerPage = 10;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,25 +36,22 @@ const UserDashboard = () => {
     fetchOrders();
   }, []);
 
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
   return (
     <div className="d-flex flex-column vh-100 bg-light" style={{ padding: "15px" }}>
-      <header
-        className="d-flex justify-content-between align-items-center p-3 mb-3 rounded"
-        style={{ backgroundColor: "#e8eaff" }}
-      >
-        <div className="d-flex align-items-center gap-2">
-          <i className="bi bi-box-seam fs-3 text-primary"></i>
-          <span className="fs-4 fw-semibold">Samaan</span>
-        </div>
-
-        <div
-          className="d-flex align-items-center gap-2 fw-semibold"
-          style={{ cursor: "pointer" }}
-          onClick={() => navigate("/userProfile")}
-        >
-          Profile <i className="bi bi-person-circle fs-4"></i>
-        </div>
-      </header>
+      
 
       <main className="flex-grow-1 bg-white rounded shadow p-4 overflow-auto">
         <div className="d-flex justify-content-between align-items-center mb-3">
@@ -69,57 +68,82 @@ const UserDashboard = () => {
         {error && <p className="text-danger">{error}</p>}
 
         {!loading && !error && (
-          <div className="table-responsive">
-            <table className="table table-hover table-bordered rounded mb-0">
-              <thead className="table-light">
-                <tr>
-                  <th>#</th>
-                  <th>Order ID</th>
-                  <th>Agent</th>
-                  <th>From</th>
-                  <th>To</th>
-                  <th>Weight (kg)</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.length === 0 ? (
+          <>
+            <div className="table-responsive">
+              <table className="table table-hover table-bordered rounded mb-0">
+                <thead className="table-light">
                   <tr>
-                    <td colSpan="9" className="text-center py-4">
-                      No orders found.
-                    </td>
+                    <th>#</th>
+                    
+                    <th>Agent</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Weight (kg)</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
                   </tr>
-                ) : (
-                  orders.map((order, idx) => (
-                    <tr key={order._id || idx}>
-                      <th>{idx + 1}</th>
-                      <td>{order._id}</td>
-                      <td>{order.agent?.name || "Not assigned"}</td>
-                      <td>{order.from}</td>
-                      <td>{order.to}</td>
-                      <td>{order.weight}</td>
-                      <td>{moment(order.date).format("YYYY-MM-DD")}</td>
-                      <td>{order.status}</td>
-                      <td>
-                        {order.agent ? (
-                          <button
-                            className="btn btn-sm btn-success"
-                            onClick={() => navigate(`/track/${order._id}`)}
-                          >
-                            Track
-                          </button>
-                        ) : (
-                          <span className="text-muted">Waiting for agent</span>
-                        )}
+                </thead>
+                <tbody>
+                  {currentOrders.length === 0 ? (
+                    <tr>
+                      <td colSpan="9" className="text-center py-4">
+                        No orders found.
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                  ) : (
+                    currentOrders.map((order, idx) => (
+                      <tr key={order._id || idx}>
+                        <th>{indexOfFirstOrder + idx + 1}</th>
+                        <td>{order.agent?.name || "Not assigned"}</td>
+                        <td>{order.from}</td>
+                        <td>{order.to}</td>
+                        <td>{order.weight}</td>
+                        <td>{moment(order.date).format("YYYY-MM-DD")}</td>
+                        <td>{order.status}</td>
+                        <td>
+                          {order.agent ? (
+                            <button
+                              className="btn btn-sm btn-success"
+                              onClick={() => navigate(`/track/${order._id}`)}
+                            >
+                              Track
+                            </button>
+                          ) : (
+                            <span className="text-muted">Waiting for agent</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {orders.length > ordersPerPage && (
+              <div className="d-flex justify-content-between align-items-center mt-3">
+                <button
+                  className="btn btn-outline-primary"
+                  onClick={handlePrevPage}
+                  disabled={currentPage === 1}
+                >
+                  ← Previous
+                </button>
+
+                <span className="fw-semibold">
+                  Page {currentPage} of {totalPages}
+                </span>
+
+                <button
+                  className="btn btn-outline-primary"
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                >
+                  Next →
+                </button>
+              </div>
+            )}
+          </>
         )}
       </main>
     </div>

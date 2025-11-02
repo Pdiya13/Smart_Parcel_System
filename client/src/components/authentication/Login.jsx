@@ -22,24 +22,19 @@ export default function Login() {
         : 'http://localhost:8080/api/auth/agent/login';
 
     try {
-      const res = await axios.post(loginUrl, {
-        email,
-        password,
-      });
+      const res = await axios.post(loginUrl, { email, password });
 
       if (res.data.status === false) {
         throw new Error('Invalid credentials');
       }
 
       localStorage.setItem('token', res.data.token);
-      console.log('Login successful');
-      if (role === 'user') {
-        navigate('/dashboard');
-      } else if (role === 'agent') {
-        navigate('/agentDashboard');
-      } else {
-        navigate('/login');
-      }
+      localStorage.setItem('role', role);
+
+      toast.success('Login successful!');
+      if (role === 'user') navigate('/dashboard');
+      else if (role === 'agent') navigate('/agentDashboard');
+      else navigate('/login');
     } catch (err) {
       toast.error('Invalid User or Password');
       console.error('Login error:', err.response?.data?.message || err.message);
@@ -47,13 +42,11 @@ export default function Login() {
   };
 
   return (
-    <div
-      className="d-flex justify-content-center align-items-center vh-100 bg-light"
-    >
+    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
       <form
         onSubmit={handleSubmit}
-        className=" text-white p-5 rounded shadow"
-        style={{ width: '100%', maxWidth: '400px' }}
+        className="bg-white p-4 p-md-5 rounded shadow"
+        style={{ width: '100%', maxWidth: '420px' }}
       >
         <h2 className="mb-4 text-center">LOGIN</h2>
 
@@ -84,13 +77,15 @@ export default function Login() {
             className="form-control"
             placeholder="Enter password"
             value={formData.password}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
             required
           />
         </div>
 
-        <fieldset className="mb-3">
-          <legend className="col-form-label pt-0 text-white">Select Role:</legend>
+        <fieldset className="mb-4">
+          <legend className="col-form-label">Select Role</legend>
           <div className="form-check form-check-inline">
             <input
               className="form-check-input"
@@ -99,7 +94,9 @@ export default function Login() {
               id="roleUser"
               value="user"
               checked={formData.role === 'user'}
-              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, role: e.target.value })
+              }
             />
             <label className="form-check-label" htmlFor="roleUser">
               User
@@ -114,7 +111,9 @@ export default function Login() {
               id="roleAgent"
               value="agent"
               checked={formData.role === 'agent'}
-              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, role: e.target.value })
+              }
             />
             <label className="form-check-label" htmlFor="roleAgent">
               Agent
@@ -126,9 +125,9 @@ export default function Login() {
           Login
         </button>
 
-        <p className="mt-3 text-center text-white-50">
+        <p className="mt-3 text-center">
           Don't have an account?{' '}
-          <Link to="/signup" className="text-info text-decoration-none">
+          <Link to="/signup" className="text-primary text-decoration-none">
             Sign Up
           </Link>
         </p>
