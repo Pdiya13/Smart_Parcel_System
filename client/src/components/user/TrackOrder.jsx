@@ -1,21 +1,40 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import mapboxgl from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 const TrackOrder = () => {
+  const mapContainerRef = useRef(null);
+  const mapRef = useRef(null);
+  const markersRef = useRef([]);
   const { id } = useParams();
   const [order, setOrder] = useState(null);
+  const [city, setCity] = useState("");
 
   const fetchOrder = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
+      if (!token) {
+        console.warn("⚠️ No token found, user unauthorized");
+        return;
+      }
+
       const res = await axios.get("http://localhost:8080/api/orders/userOrders", {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       const found = res.data.orders.find((o) => o._id === id);
-      if (found) setOrder(found);
+      if (found) {
+        setOrder(found);
+        setCity(found.currlocation || "");
+        console.log("✅ Order fetched:", found);
+      } else {
+        console.warn("⚠️ Order not found for ID:", id);
+      }
     } catch (err) {
-      console.error("Error fetching order:", err);
+      console.error("❌ Error fetching order:", err);
     }
   }, [id]);
 
@@ -23,28 +42,97 @@ const TrackOrder = () => {
     fetchOrder();
   }, [fetchOrder]);
 
+useEffect(() => {
+  if (!mapContainerRef.current || mapRef.current) return;
+
+  mapRef.current = new mapboxgl.Map({
+    container: mapContainerRef.current,
+    style: "mapbox://styles/mapbox/streets-v12",
+    center: [78.9629, 20.5937], // 🇮🇳 India center fallback
+    zoom: 4,
+  });
+
+  mapRef.current.on("load", () => {
+    console.log("🗺️ Map fully loaded ✅");
+  });
+}, [order]);
+
+
+  const getCoordinates = async (location) => {
+    try {
+      const response = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+          location
+        )}.json?country=IN&access_token=${mapboxgl.accessToken}`
+      );
+
+      const data = await response.json();
+
+      if (data.features.length > 0) {
+        console.log("📍 Found coordinates for", location, ":", data.features[0].geometry.coordinates);
+        return data.features[0].geometry.coordinates; // [lng, lat]
+      } else {
+        console.warn("⚠️ No coordinates found for:", location);
+        return null;
+      }
+    } catch (err) {
+      console.error("❌ Geocoding failed:", err);
+      return null;
+    }
+  };
+
+useEffect(() => {
+  (async () => {
+    if (!city || !mapRef.current) return;
+
+    if (!mapRef.current.loaded()) {
+      mapRef.current.once("load", async () => {
+        await updateMarker(city);
+      });
+    } else {
+      await updateMarker(city);
+    }
+  })();
+}, [city]);
+
+const updateMarker = async (cityName) => {
+  const coords = await getCoordinates(cityName);
+  console.log("🏙️ Updating map for city:", cityName, "with coords:", coords);
+  if (!coords) return;
+
+  markersRef.current.forEach((m) => m.remove());
+  markersRef.current = [];
+
+  const marker = new mapboxgl.Marker({ color: "green" })
+    .setLngLat(coords)
+    .addTo(mapRef.current);
+
+  markersRef.current.push(marker);
+
+  mapRef.current.flyTo({ center: coords, zoom: 9, essential: true });
+};
+
+
   const handlePayment = async () => {
     try {
       const token = localStorage.getItem("token");
+      const calculatedAmount = order.weight * 100;
 
       const res = await axios.post(
         "http://localhost:8080/api/orders/create-order",
-        { orderId: id, amount: order.amount || 500 },
+        { orderId: id, amount: calculatedAmount },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       const { orderId, key } = res.data;
-
       const options = {
         key,
-        amount: (order.amount || 500) * 100,
+        amount: (order.weight *100 ) ,
         currency: "INR",
         name: "Samaan Parcel",
         description: "Order Payment",
         order_id: orderId,
         handler: async function (response) {
-          alert("Payment successful!");
-
           await axios.post(
             "http://localhost:8080/api/orders/verify-payment",
             {
@@ -55,7 +143,6 @@ const TrackOrder = () => {
             },
             { headers: { Authorization: `Bearer ${token}` } }
           );
-
           await fetchOrder();
         },
         prefill: {
@@ -69,7 +156,7 @@ const TrackOrder = () => {
       const razor = new window.Razorpay(options);
       razor.open();
     } catch (err) {
-      console.error("Payment error:", err);
+      console.error("❌ Payment error:", err);
     }
   };
 
@@ -77,11 +164,15 @@ const TrackOrder = () => {
 
   return (
     <div className="container p-4">
+      <h3 className="mb-3">Track Your Order</h3>
       <p><strong>Status:</strong> {order.status}</p>
       <p><strong>Agent:</strong> {order.agent?.name || "Not Assigned"}</p>
+      <p><strong>Weight:</strong> {order.weight}</p>
+      <p><strong>Amount:</strong> ₹{order.weight ? order.weight * 100 : 0}</p>
       <p><strong>From:</strong> {order.from}</p>
       <p><strong>To:</strong> {order.to}</p>
-      <p><strong>Amount:</strong> ₹{order.amount || 500}</p>
+      <p><strong>Current Location:</strong> {order.currlocation}</p>
+      
 
       {order.status !== "PAID" && (
         <button
@@ -91,6 +182,17 @@ const TrackOrder = () => {
           Pay Now
         </button>
       )}
+
+      <div
+        ref={mapContainerRef}
+        style={{
+          width: "100%",
+          height: "400px",
+          marginTop: "20px",
+          borderRadius: "8px",
+          overflow: "hidden",
+        }}
+      />
     </div>
   );
 };

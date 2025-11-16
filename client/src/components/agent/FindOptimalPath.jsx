@@ -15,8 +15,7 @@ const FindOptimalPath = () => {
   const [results, setResults] = useState([]);
   const [agent, setAgent] = useState(null);
 
-  mapboxgl.accessToken =
-    "pk.eyJ1IjoiZXZhLXJhc3RlIiwiYSI6ImNtZnNsNWZsaTBrcXgya3NkYTlsb2IxdTgifQ.hZ-uv_cqLf_ZzUxEaQUTVw";
+  mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
   const navigate = useNavigate();
 

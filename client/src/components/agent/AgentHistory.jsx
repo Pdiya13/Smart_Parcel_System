@@ -6,7 +6,9 @@ const AgentHistory = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [updating, setUpdating] = useState(null);
+  const [currLocations, setCurrLocations] = useState({}); 
+  
   const fetchHistory = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -16,7 +18,7 @@ const AgentHistory = () => {
       }
 
       const response = await axios.get("/api/orders/agent-history", {
-        headers: { Authorization: `Bearer ${token}` }, // ✅ fixed
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (response.data.status) {
@@ -31,6 +33,31 @@ const AgentHistory = () => {
       }
       console.error("Error fetching orders:", err);
       setLoading(false);
+    }
+  };
+
+  const handleLocationUpdate = async (orderId) => {
+    try {
+      const newLocation = currLocations[orderId];
+      if (!newLocation) {
+        alert("Please enter a location before updating.");
+        return;
+      }
+
+      setUpdating(orderId);
+      const token = localStorage.getItem("token");
+
+      await axios.patch(
+        `/api/orders/update-location/${orderId}`,
+        { currlocation: newLocation },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setUpdating(null);
+      fetchHistory(); 
+    } catch (err) {
+      console.error("Error updating location:", err);
+      setUpdating(null);
     }
   };
 
@@ -56,23 +83,53 @@ const AgentHistory = () => {
               <th>Date</th>
               <th>Weight</th>
               <th>Status</th>
+              <th>Current Location</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {orders.map((record) => (
-              <tr key={record._id}>
-                <td>{record.userId?.name}</td>
-                <td>{record.orderId?.from}</td>
-                <td>{record.orderId?.to}</td>
-                <td>
-                  {record.orderId?.date
-                    ? new Date(record.orderId.date).toLocaleDateString()
-                    : ""}
-                </td>
-                <td>{record.orderId?.weight}</td>
-                <td>{record.orderId?.status}</td>
-              </tr>
-            ))}
+            {orders.map((record) => {
+              const order = record.orderId;
+              if (!order) return null;
+
+              return (
+                <tr key={order._id}>
+                  <td>{record.userId?.name}</td>
+                  <td>{order.from}</td>
+                  <td>{order.to}</td>
+                  <td>
+                    {order.date
+                      ? new Date(order.date).toLocaleDateString()
+                      : ""}
+                  </td>
+                  <td>{order.weight}</td>
+                  <td>{order.status}</td>
+                  <td>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Enter current city"
+                      value={currLocations[order._id] ?? order.currlocation ?? ""}
+                      onChange={(e) =>
+                        setCurrLocations({
+                          ...currLocations,
+                          [order._id]: e.target.value,
+                        })
+                      }
+                    />
+                  </td>
+                  <td>
+                    <button
+                      className="btn btn-primary btn-sm"
+                      onClick={() => handleLocationUpdate(order._id)}
+                      disabled={updating === order._id}
+                    >
+                      {updating === order._id ? "Updating..." : "Update"}
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       )}

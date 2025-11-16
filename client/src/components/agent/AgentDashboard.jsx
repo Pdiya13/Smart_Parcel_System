@@ -144,9 +144,6 @@ const AgentDashboard = () => {
                         <td className="align-middle">
                           <div>
                             <div className="fw-semibold">{order.userId.name}</div>
-                            <small className="text-muted">
-                              ID: {order.userId._id.slice(-6)}
-                            </small>
                           </div>
                         </td>
                         <td className="align-middle">

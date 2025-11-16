@@ -18,9 +18,9 @@ const placeOrder = async (req, res) => {
       return res.status(400).json({ status: false, message: "Please provide all fields." });
     }
 
-    const newOrder = new Order({ from, to, weight, date, userId });
+    const newOrder = new Order({ from, to, currlocation: from, weight, date, userId });
     await newOrder.save();
-
+    console.log("Order placed:", newOrder);
     res.status(201).json({
       status: true,
       message: "Order placed successfully",
@@ -31,27 +31,69 @@ const placeOrder = async (req, res) => {
   }
 };
 
+const updateLocation = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { currlocation } = req.body;
+
+    if (!currlocation) {
+      return res.status(400).json({ status: false, message: "Location is required" });
+    }
+
+    const order = await Order.findByIdAndUpdate(
+      id,
+      { currlocation },
+      { new: true }
+    );
+
+    if (!order) {
+      return res.status(404).json({ status: false, message: "Order not found" });
+    }
+
+    res.json({ status: true, message: "Location updated successfully", order });
+  } catch (err) {
+    res.status(500).json({ status: false, message: "Failed to update location", error: err.message });
+  }
+};
+
+
 const getOrdersForUser = async (req, res) => {
   try {
     const userId = req.user.id;
-    const orders = await Order.find({ userId }).sort({ createdAt: -1 }).lean();
+
+    const orders = await Order.find({ userId })
+      .populate("userId", "name email phone") 
+      .sort({ createdAt: -1 })
+      .lean();
 
     const ordersWithAgents = await Promise.all(
       orders.map(async (order) => {
-        if (order.status === 'PENDING') {
+        if (order.status === "PENDING") {
           return { ...order, agent: null };
         }
+
         const userOrder = await UserOrder.findOne({ orderId: order._id })
-          .populate('agentId', 'name email')
+          .populate("agentId", "name email phone") 
           .lean();
-        return { ...order, agent: userOrder?.agentId || null };
+
+        return {
+          ...order,
+          agent: userOrder?.agentId || null,
+        };
       })
     );
 
-    //console.log(ordersWithAgents);
-    res.json({ status: true, orders: ordersWithAgents });
+    res.json({
+      status: true,
+      orders: ordersWithAgents,
+    });
   } catch (err) {
-    res.status(500).json({ status: false, message: 'Error fetching orders', error: err.message });
+    console.error("❌ Error fetching orders:", err);
+    res.status(500).json({
+      status: false,
+      message: "Error fetching orders",
+      error: err.message,
+    });
   }
 };
 
@@ -224,4 +266,4 @@ const verifyPayment = async (req, res) => {
   }
 };
 
-module.exports = { placeOrder, getOrdersForUser, getOrdersForAgent, orderAccept, agentHistory, findShortestPath, createOrder, verifyPayment };
+module.exports = { placeOrder, updateLocation, getOrdersForUser, getOrdersForAgent, orderAccept, agentHistory, findShortestPath, createOrder, verifyPayment };

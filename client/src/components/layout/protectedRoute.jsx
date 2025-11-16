@@ -5,7 +5,7 @@ const ProtectedRoute = ({ allowedRoles }) => {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
   const location = useLocation();
- console.log("ProtectedRoute check:", { token, role, allowedRoles });
+ //console.log("ProtectedRoute check:", { token, role, allowedRoles });
   if (!token) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }

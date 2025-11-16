@@ -12,6 +12,10 @@ const orderSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
+    currlocation: {
+        type: String,
+        trim: true
+    },
     weight: {
         type: Number,
         required: true,
