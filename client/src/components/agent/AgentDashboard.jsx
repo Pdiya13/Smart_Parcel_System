@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const AgentDashboard = () => {
   const navigate = useNavigate();
@@ -49,18 +50,31 @@ const AgentDashboard = () => {
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      alert(`Accepted order ${id}`);
+      toast.success("Order accepted successfully");
       fetchOrders();
     } catch (err) {
       console.error(err);
     }
   };
 
-  const handleReject = async (id) => {
-    setOrders((prev) => prev.filter((order) => order._id !== id));
-  };
+ const handleReject = async (id) => {
+  try {
+    const token = localStorage.getItem("token");
 
-  // Pagination logic
+    await axios.patch(
+      `/api/orders/reject/${id}`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    toast.success("Order rejected successfully");
+    setOrders((prev) => prev.filter((order) => order._id !== id));
+
+  } catch (err) {
+    console.error("Reject Error:", err);
+  }
+};
+
+  
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
   const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);

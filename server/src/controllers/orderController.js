@@ -109,6 +109,7 @@ const getOrdersForAgent = async (req, res) => {
     }
     const orders = await Order.find({ 
       from: agent.city,
+      rejectedBy: { $ne: agentId },
       status: "PENDING" 
     })
       .populate("userId", "name email phone city")  
@@ -147,6 +148,31 @@ const orderAccept = async (req, res) => {
   }
 };
 
+const deliveredOrder = async (req, res) => {
+  await Order.findByIdAndUpdate(req.params.id, {
+    status: "Delivered",
+    deliveredAt: Date.now(),
+  });
+
+  res.json({ status: true, message: "Order delivered!" });
+};
+
+const rejectOrder = async (req, res) => {
+  try {
+    const agentId = req.user.id; 
+
+    await Order.findByIdAndUpdate(req.params.id, {
+      $addToSet: { rejectedBy: agentId }  
+    });
+
+    return res.json({ status: true, message: "Order rejected by agent" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ status: false, message: "Server error" });
+  }
+};
+
+
 const agentHistory = async (req, res) => {
   try {
     const agentId = req.user.id;
@@ -176,7 +202,7 @@ const findShortestPath = async (req, res) => {
     Ahmedabad: { Nadiad: 50, Gandhinagar: 30, Rajkot: 200 },
     Gandhinagar: { Ahmedabad: 30, Vadodara: 120, Bhavnagar: 220 },
     Rajkot: { Ahmedabad: 200, Kutch: 300 },
-    Vadodara: { Nadiad: 40, Gandhinagar: 120, Bhavnagar: 100 },
+    Vadodara: { Nadiad: 40, Gandhinagar: 120, Bhavnagar: 100, Ahmedabad: 90},
     Kutch: { Rajkot: 300 },
     Bhavnagar: { Vadodara: 100, Gandhinagar: 220 },
   };
@@ -266,4 +292,4 @@ const verifyPayment = async (req, res) => {
   }
 };
 
-module.exports = { placeOrder, updateLocation, getOrdersForUser, getOrdersForAgent, orderAccept, agentHistory, findShortestPath, createOrder, verifyPayment };
+module.exports = { placeOrder, updateLocation, getOrdersForUser, getOrdersForAgent, orderAccept, rejectOrder, agentHistory, findShortestPath, createOrder, verifyPayment ,deliveredOrder};

@@ -61,6 +61,28 @@ const AgentHistory = () => {
     }
   };
 
+  const handleDelivered = async (order) => {
+  try {
+    if ((currLocations[order._id] ?? order.currlocation) !== order.to) {
+      alert("Current location must match destination before marking delivered.");
+      return;
+    }
+
+
+    const token = localStorage.getItem("token");
+
+    await axios.patch(
+      `/api/orders/mark-delivered/${order._id}`,
+      { status: "Delivered" },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    fetchHistory();
+  } catch (err) {
+    console.error("Error marking delivered:", err);
+  }
+};
+
   useEffect(() => {
     fetchHistory();
   }, []);
@@ -82,9 +104,11 @@ const AgentHistory = () => {
               <th>To</th>
               <th>Date</th>
               <th>Weight</th>
+              <th>Amount</th>
               <th>Status</th>
               <th>Current Location</th>
               <th>Action</th>
+              <th>Mark Delivered</th>
             </tr>
           </thead>
           <tbody>
@@ -103,6 +127,7 @@ const AgentHistory = () => {
                       : ""}
                   </td>
                   <td>{order.weight}</td>
+                  <td>{order.weight*100}</td>
                   <td>{order.status}</td>
                   <td>
                     <input
@@ -126,6 +151,16 @@ const AgentHistory = () => {
                     >
                       {updating === order._id ? "Updating..." : "Update"}
                     </button>
+                  </td>
+                  <td>
+                      <button
+                        className="btn btn-success btn-sm ms-2"
+                        onClick={() => handleDelivered(order)}
+                        disabled={(currLocations[order._id] ?? order.currlocation) !== order.to}
+                      >
+                        ✓
+                      </button>
+
                   </td>
                 </tr>
               );

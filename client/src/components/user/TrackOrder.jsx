@@ -97,7 +97,6 @@ useEffect(() => {
 
 const updateMarker = async (cityName) => {
   const coords = await getCoordinates(cityName);
-  console.log("🏙️ Updating map for city:", cityName, "with coords:", coords);
   if (!coords) return;
 
   markersRef.current.forEach((m) => m.remove());

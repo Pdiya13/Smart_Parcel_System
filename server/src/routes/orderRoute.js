@@ -5,10 +5,12 @@ const {
   getOrdersForUser,
   getOrdersForAgent,
   orderAccept,
+  rejectOrder,
   agentHistory,
   findShortestPath,
     createOrder,
     verifyPayment,
+    deliveredOrder,
 } = require("../controllers/orderController");
 
 const { requireSignIn } = require("../middlewares/authMiddleware");
@@ -20,9 +22,10 @@ router.post("/agentSelect", requireSignIn, placeOrder);
 router.get("/userOrders", requireSignIn, getOrdersForUser); 
 router.patch("/update-location/:id", requireSignIn, updateLocation);
 router.get("/agent-orders", requireSignIn, getOrdersForAgent);  
-router.put("/:id/accept", requireSignIn, orderAccept);          
+router.put("/:id/accept", requireSignIn, orderAccept);        
+router.patch("/reject/:id", requireSignIn, rejectOrder);  
 router.get("/agent-history", requireSignIn, agentHistory);      
-
+router.patch("/mark-delivered/:id", requireSignIn, deliveredOrder);
 router.post("/findpath", requireSignIn, findShortestPath); 
 
 router.post("/create-order", requireSignIn, createOrder);

@@ -35,7 +35,13 @@ const orderSchema = new mongoose.Schema({
     userId: {
         type: ObjectId,
         ref: "User",
-  },
+    },
+     rejectedBy: [
+        {
+            type: ObjectId,
+            ref: "Agent"
+        }
+    ],
 });
 
 const Order = mongoose.model('Order', orderSchema);

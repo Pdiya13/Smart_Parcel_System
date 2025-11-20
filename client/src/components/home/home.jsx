@@ -19,13 +19,7 @@ export default function SamaanHomepage() {
             onClick={() => navigate("/")}
             style={{ cursor: "pointer" }}
           >
-            <img
-              src={logo}
-              alt="Samaan Logo"
-              width="45"
-              height="45"
-              className="rounded shadow-sm"
-            />
+           
             <h1 className="fs-3 fw-bold text-primary mb-0">Samaan</h1>
           </div>
 
@@ -112,7 +106,7 @@ export default function SamaanHomepage() {
                 📦 Your smart parcel journey starts here.
               </p>
               <img
-                src="https://illustrations.popsy.co/gray/delivery.svg"
+               src="/img.jpg" 
                 alt="Delivery Illustration"
                 className="img-fluid"
                 style={{ maxWidth: "300px" }}
