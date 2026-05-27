@@ -7,7 +7,7 @@ const {
   orderAccept,
   rejectOrder,
   agentHistory,
-  findShortestPath,
+  findOptimizedRoute,
     createOrder,
     verifyPayment,
     deliveredOrder,
@@ -26,7 +26,7 @@ router.put("/:id/accept", requireSignIn, orderAccept);
 router.patch("/reject/:id", requireSignIn, rejectOrder);  
 router.get("/agent-history", requireSignIn, agentHistory);      
 router.patch("/mark-delivered/:id", requireSignIn, deliveredOrder);
-router.post("/findpath", requireSignIn, findShortestPath); 
+router.post("/findpath", requireSignIn, findOptimizedRoute); 
 
 router.post("/create-order", requireSignIn, createOrder);
 router.post("/verify-payment", requireSignIn, verifyPayment);

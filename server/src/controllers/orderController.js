@@ -195,67 +195,132 @@ const agentHistory = async (req, res) => {
   }
 };
 
-const findShortestPath = async (req, res) => {
-  const { source, destinations } = req.body; 
-  const graph = {
-    Nadiad: { Ahmedabad: 50, Vadodara: 40 },
-    Ahmedabad: { Nadiad: 50, Gandhinagar: 30, Rajkot: 200 },
-    Gandhinagar: { Ahmedabad: 30, Vadodara: 120, Bhavnagar: 220 },
-    Rajkot: { Ahmedabad: 200, Kutch: 300 },
-    Vadodara: { Nadiad: 40, Gandhinagar: 120, Bhavnagar: 100, Ahmedabad: 90},
-    Kutch: { Rajkot: 300 },
-    Bhavnagar: { Vadodara: 100, Gandhinagar: 220 },
-  };
+const findOptimizedRoute = async (req, res) => {
+  const { source, destinations } = req.body;
 
-  const dijkstra = (start) => {
-    const distances = {};
-    const prev = {};
-    const pq = new Set(Object.keys(graph));
-    for (let city of pq) {
-      distances[city] = Infinity;
-      prev[city] = null;
-    }
-    distances[start] = 0;
-    while (pq.size) {
-      let u = [...pq].reduce((a, b) =>
-        distances[a] < distances[b] ? a : b
-      );
-      pq.delete(u);
-      for (let neighbor in graph[u]) {
-        let alt = distances[u] + graph[u][neighbor];
-        if (alt < distances[neighbor]) {
-          distances[neighbor] = alt;
-          prev[neighbor] = u;
+  console.log("Source:", source);
+console.log("Destinations:", destinations);
+  // Graph with distances
+  const graph = {
+  Nadiad: {
+    Ahemdabad: 50,
+    Vadodara: 40,
+    Gandhinagar: 80,
+    Rajkot: 250,
+    Bhavnagar: 140,
+    Kutch: 550,
+  },
+
+  Ahemdabad: {
+    Nadiad: 50,
+    Vadodara: 90,
+    Gandhinagar: 30,
+    Rajkot: 200,
+    Bhavnagar: 170,
+    Kutch: 500,
+  },
+
+  Vadodara: {
+    Nadiad: 40,
+    Ahemdabad: 90,
+    Gandhinagar: 120,
+    Rajkot: 280,
+    Bhavnagar: 100,
+    Kutch: 580,
+  },
+
+  Gandhinagar: {
+    Nadiad: 80,
+    Ahemdabad: 30,
+    Vadodara: 120,
+    Rajkot: 250,
+    Bhavnagar: 220,
+    Kutch: 520,
+  },
+
+  Rajkot: {
+    Nadiad: 250,
+    Ahemdabad: 200,
+    Vadodara: 280,
+    Gandhinagar: 250,
+    Bhavnagar: 260,
+    Kutch: 300,
+  },
+
+  Bhavnagar: {
+    Nadiad: 140,
+    Ahemdabad: 170,
+    Vadodara: 100,
+    Gandhinagar: 220,
+    Rajkot: 260,
+    Kutch: 560,
+  },
+
+  Kutch: {
+    Nadiad: 550,
+    Ahemdabad: 500,
+    Vadodara: 580,
+    Gandhinagar: 520,
+    Rajkot: 300,
+    Bhavnagar: 560,
+  },
+};
+
+  let currentCity = source;
+
+  // Copy destinations
+  let unvisited = [...destinations];
+
+  let route = [source];
+  let totalDistance = 0;
+
+  // Greedy TSP
+  while (unvisited.length > 0) {
+    let nearestCity = null;
+    let shortestDistance = Infinity;
+
+    for (let city of unvisited) {
+      // Check direct path exists
+      if (
+        graph[currentCity] &&
+        graph[currentCity][city] !== undefined
+      ) {
+        let distance = graph[currentCity][city];
+
+        if (distance < shortestDistance) {
+          shortestDistance = distance;
+          nearestCity = city;
         }
       }
     }
-    return { distances, prev };
-  };
 
-  const buildPath = (prev, target) => {
-    let path = [];
-    let u = target;
-    while (u) {
-      path.unshift(u);
-      u = prev[u];
+    // No reachable city found
+    if (!nearestCity) {
+      return res.status(400).json({
+        message: `No reachable destination from ${currentCity}`,
+      });
     }
-    return path;
-  };
 
-  const { distances, prev } = dijkstra(source);
-  const results = destinations.map((dest) => {
-    return {
-      destination: dest,
-      distance: distances[dest],
-      path: buildPath(prev, dest),
-    };
-  });
+    // Update route
+    route.push(nearestCity);
+    totalDistance += shortestDistance;
+
+    // Move to next city
+    currentCity = nearestCity;
+
+    // Remove visited city
+    unvisited = unvisited.filter(
+      (city) => city !== nearestCity
+    );
+  }
 
   return res.json({
     source,
-    results,
+    optimizedRoute: route,
+    totalDistance,
   });
 };
+
 
 const createOrder = async (req, res) => {
   try {
@@ -292,4 +357,4 @@ const verifyPayment = async (req, res) => {
   }
 };
 
-module.exports = { placeOrder, updateLocation, getOrdersForUser, getOrdersForAgent, orderAccept, rejectOrder, agentHistory, findShortestPath, createOrder, verifyPayment ,deliveredOrder};
+module.exports = { placeOrder, updateLocation, getOrdersForUser, getOrdersForAgent, orderAccept, rejectOrder, agentHistory, findOptimizedRoute, createOrder, verifyPayment ,deliveredOrder};
