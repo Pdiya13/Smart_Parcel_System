@@ -50,6 +50,13 @@ const updateLocation = async (req, res) => {
       return res.status(404).json({ status: false, message: "Order not found" });
     }
 
+    await order.save();
+
+    global.io.emit("order-location-updated", {
+      orderId: order._id,
+      currlocation: order.currlocation,
+    });
+
     res.json({ status: true, message: "Location updated successfully", order });
   } catch (err) {
     res.status(500).json({ status: false, message: "Failed to update location", error: err.message });

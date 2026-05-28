@@ -3,15 +3,42 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { io } from "socket.io-client";
 
-mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN; 
+
 const TrackOrder = () => {
+  const socket = io('http://localhost:8080');
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
   const markersRef = useRef([]);
   const { id } = useParams();
   const [order, setOrder] = useState(null);
   const [city, setCity] = useState("");
+
+  
+    useEffect(() => {
+
+    socket.on("order-location-updated", (data) => {
+
+      console.log("Live update:", data);
+
+      if (data.orderId === id) {
+
+        setOrder((prev) => ({
+          ...prev,
+          currlocation: data.currlocation,
+        }));
+
+        setCity(data.currlocation);
+      }
+    });
+
+    return () => {
+      socket.off("order-location-updated");
+    };
+
+  }, [id]);
 
   const fetchOrder = useCallback(async () => {
     try {
