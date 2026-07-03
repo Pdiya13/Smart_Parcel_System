@@ -27,7 +27,7 @@ const FindOptimalPath = () => {
         const token = localStorage.getItem("token");
 
         const res = await axios.get(
-          "http://localhost:8080/api/auth/agent/allowedCities",
+          `${import.meta.env.VITE_API_URL}/api/auth/agent/allowedCities`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -56,7 +56,7 @@ const FindOptimalPath = () => {
 
       try {
         const res = await axios.get(
-          "http://localhost:8080/api/profile/agent",
+          `${import.meta.env.VITE_API_URL}/api/profile/agent`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -157,7 +157,7 @@ const FindOptimalPath = () => {
       const token = localStorage.getItem("token");
 
       const res = await axios.post(
-        "http://localhost:8080/api/orders/findpath",
+        `${import.meta.env.VITE_API_URL}/api/orders/findpath`,
         {
           source,
           destinations: destination,

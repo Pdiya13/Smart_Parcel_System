@@ -16,7 +16,7 @@ const CarrierProfile = () => {
       if (!token) return navigate("/login");
 
       try {
-        const res = await axios.get("http://localhost:8080/api/profile/agent", {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/agent`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -41,7 +41,7 @@ const CarrierProfile = () => {
   const handleUpdate = async () => {
     try {
       const res = await axios.put(
-        "http://localhost:8080/api/profile/agent",
+        `${import.meta.env.VITE_API_URL}/api/profile/agent`,
         { name: formData.name, phoneNo: formData.phoneNo, city: formData.city },
         { headers: { Authorization: `Bearer ${token}` } }
       );

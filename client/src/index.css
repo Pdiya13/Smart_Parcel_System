@@ -1,0 +1,145 @@
+:root {
+  /* Modern Color Palette */
+  --samaan-primary: #4F46E5; /* Indigo 600 */
+  --samaan-primary-hover: #4338CA; /* Indigo 700 */
+  --samaan-secondary: #0F172A; /* Slate 900 */
+  --samaan-accent: #38BDF8; /* Sky 400 */
+  --samaan-bg-light: #F8FAFC; /* Slate 50 */
+  --samaan-text-main: #334155; /* Slate 700 */
+  --samaan-text-muted: #64748B; /* Slate 500 */
+  
+  --bs-primary: var(--samaan-primary);
+  --bs-primary-rgb: 79, 70, 229;
+  --bs-secondary: var(--samaan-secondary);
+  --bs-body-font-family: 'Inter', sans-serif;
+  --bs-body-bg: var(--samaan-bg-light);
+  --bs-body-color: var(--samaan-text-main);
+  --bs-link-color: var(--samaan-primary);
+  --bs-link-hover-color: var(--samaan-primary-hover);
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--samaan-bg-light);
+  color: var(--samaan-text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Typography Enhancements */
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-weight: 700;
+  color: var(--samaan-secondary);
+  letter-spacing: -0.02em;
+}
+
+/* Buttons Styling Override */
+.btn {
+  font-weight: 500;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--samaan-primary), var(--samaan-primary-hover));
+  border: none;
+  color: white;
+  box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2), 0 2px 4px -1px rgba(79, 70, 229, 0.1);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3), 0 4px 6px -2px rgba(79, 70, 229, 0.1);
+  background: linear-gradient(135deg, var(--samaan-primary-hover), #3730A3);
+  color: white;
+}
+
+.btn-outline-primary {
+  color: var(--samaan-primary);
+  border: 2px solid var(--samaan-primary);
+  background: transparent;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--samaan-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+}
+
+/* Cards & Glassmorphism */
+.card {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Navbar Enhancements */
+.navbar {
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+/* Inputs & Forms */
+.form-control, .form-select {
+  border-radius: 0.5rem;
+  border: 1px solid #CBD5E1;
+  padding: 0.75rem 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--samaan-primary);
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+/* Utility Animations */
+.fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom Text Gradients */
+.text-gradient {
+  background: linear-gradient(135deg, var(--samaan-primary), var(--samaan-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Background Patterns */
+.bg-mesh {
+  background-color: var(--samaan-bg-light);
+  background-image: 
+    radial-gradient(at 40% 20%, hsla(228,100%,74%,0.15) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, hsla(189,100%,56%,0.15) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, hsla(355,100%,93%,0.1) 0px, transparent 50%);
+}

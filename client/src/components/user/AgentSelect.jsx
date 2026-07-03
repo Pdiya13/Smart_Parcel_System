@@ -14,7 +14,7 @@ export default function AgentSelect() {
   useEffect(() => {
     async function fetchCities() {
       try {
-        const res = await axios.get('http://localhost:8080/api/auth/agent/allowedCities');
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/agent/allowedCities`);
         if (res.data && res.data.cities) {
           setCities(res.data.cities);
         }
@@ -36,7 +36,7 @@ export default function AgentSelect() {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.post(
-        'http://localhost:8080/api/orders/agentSelect',
+        `${import.meta.env.VITE_API_URL}/api/orders/agentSelect`,
         {
           from: fromCity,
           to: toCity,

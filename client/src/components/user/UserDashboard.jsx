@@ -21,7 +21,7 @@ const UserDashboard = () => {
           return;
         }
 
-        const res = await axios.get("http://localhost:8080/api/orders/userOrders", {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/orders/userOrders`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

@@ -15,7 +15,7 @@ const Profile = () => {
     const fetchProfile = async () => {
       if (!token) return navigate("/login");
       try {
-        const res = await axios.get("http://localhost:8080/api/profile/user", {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/user`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(res.data.user);
@@ -39,7 +39,7 @@ const Profile = () => {
   const handleUpdate = async () => {
     try {
       const res = await axios.put(
-        "http://localhost:8080/api/profile/user",
+        `${import.meta.env.VITE_API_URL}/api/profile/user`,
         { name: formData.name, phone: formData.phone, address: formData.address },
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -18,8 +18,8 @@ export default function Login() {
 
     const loginUrl =
       role === 'user'
-        ? 'http://localhost:8080/api/auth/user/login'
-        : 'http://localhost:8080/api/auth/agent/login';
+        ? `${import.meta.env.VITE_API_URL}/api/auth/user/login`
+        : `${import.meta.env.VITE_API_URL}/api/auth/agent/login`;
 
     try {
       const res = await axios.post(loginUrl, { email, password });

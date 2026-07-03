@@ -20,7 +20,7 @@ export default function Signup() {
   useEffect(() => {
     async function fetchCities() {
       try {
-        const res = await axios.get('http://localhost:8080/api/auth/agent/allowedCities');
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/agent/allowedCities`);
         if (res.data && res.data.cities) {
           setCities(res.data.cities);
         }
@@ -41,7 +41,7 @@ export default function Signup() {
     try {
       let res;
       if (formData.role === 'user') {
-            res = await axios.post('http://localhost:8080/api/auth/user/signup', {
+            res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/user/signup`, {
             name: formData.name,
             email: formData.email,
             password: formData.password,
@@ -49,7 +49,7 @@ export default function Signup() {
             city: formData.city || undefined   
       });
 } else {
-        res = await axios.post('http://localhost:8080/api/auth/agent/signup', {
+        res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/agent/signup`, {
           name: formData.name,
           email: formData.email,
           password: formData.password,

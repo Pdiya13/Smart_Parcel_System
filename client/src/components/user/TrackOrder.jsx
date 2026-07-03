@@ -8,7 +8,7 @@ import { io } from "socket.io-client";
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN; 
 
 const TrackOrder = () => {
-  const socket = io('http://localhost:8080');
+  const socket = io(import.meta.env.VITE_API_URL);
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
   const markersRef = useRef([]);
@@ -48,7 +48,7 @@ const TrackOrder = () => {
         return;
       }
 
-      const res = await axios.get("http://localhost:8080/api/orders/userOrders", {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/orders/userOrders`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -145,7 +145,7 @@ const updateMarker = async (cityName) => {
       const calculatedAmount = order.weight * 100;
 
       const res = await axios.post(
-        "http://localhost:8080/api/orders/create-order",
+        `${import.meta.env.VITE_API_URL}/api/orders/create-order`,
         { orderId: id, amount: calculatedAmount },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -160,7 +160,7 @@ const updateMarker = async (cityName) => {
         order_id: orderId,
         handler: async function (response) {
           await axios.post(
-            "http://localhost:8080/api/orders/verify-payment",
+            `${import.meta.env.VITE_API_URL}/api/orders/verify-payment`,
             {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
