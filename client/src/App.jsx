@@ -7,7 +7,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import Signup from './components/authentication/Signup';
 import Login from './components/authentication/Login';
 import UserDashboard from './components/user/UserDashboard';
-import ProfilePage from './components/agent/Profile';
+import ProfilePage from './components/agent/profile';
 import AgentSelect from './components/user/AgentSelect';
 import UserProfilePage from './components/user/UserProfilePage';
 import AgentDashboard from './components/agent/AgentDashboard';
